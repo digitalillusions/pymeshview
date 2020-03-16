@@ -13,11 +13,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      with: 
+        submodules: true
+    - name: Make directory and change into it
+      run: mkdir build && cd build
+    - name: CMake Configure Step
+      run: cmake ../pymeshview
+    - name: CMake Build Step
+      run: cmake --build .
