@@ -7,6 +7,7 @@ add_subdirectory(extern/glfw)
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glm)
 add_subdirectory(extern/pybind11)
+add_subdirectory(extern/stb)
 
 # Add main source code
 add_subdirectory(src)

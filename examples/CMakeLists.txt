@@ -1,1 +1,1 @@
-add_subdirectory(mesh_viewer)
+add_subdirectory(viewer)
