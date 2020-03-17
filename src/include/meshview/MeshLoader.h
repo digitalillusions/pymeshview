@@ -31,15 +31,12 @@ public:
 private:
     void computeCombinations();
     void computeBoundingBox();
-    inline std::array<float, 3> computeNormal(std::array<float, 3> x, std::array<float, 3> y);
-    inline std::array<float, 3> subtractArray(std::array<float, 3> x, std::array<float, 3> y);
-    inline std::array<float, 6> concatArray(std::array<float, 3> x, std::array<float, 3> y);
-    std::vector<std::array<float, 3>> m_vertices;
-    std::vector<std::array<float, 6>> m_verts_and_normals;
-    std::vector<std::array<unsigned int, 3>> m_cells;
+    std::vector<vec3> m_vertices;
+    std::vector<vec6> m_verts_and_normals;
+    std::vector<vec3ui> m_cells;
     CellType m_cell_type;
 
-    std::vector<std::array<unsigned int, 3>> m_combs;
+    std::vector<vec3ui> m_combs;
     glm::vec3 m_bbox_min, m_bbox_max;
 
 };

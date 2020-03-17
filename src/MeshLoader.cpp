@@ -16,8 +16,8 @@ MeshLoader::MeshLoader(const std::string filename, CellType cell_type) : m_cell_
     std::cout << "Loaded Meshio Module." << std::endl;
     auto data = meshio.attr("read")(filename);
     m_vertices.clear();
-    auto x = data.attr("points").cast<std::vector<std::array<float, 3>>>();
-    m_vertices = data.attr("points").cast<std::vector<std::array<float, 3>>>();
+    auto x = data.attr("points").cast<std::vector<vec3>>();
+    m_vertices = data.attr("points").cast<std::vector<vec3>>();
     computeCombinations();
     if (cell_type == CellType::TETRAHEDRAL){
         auto cells = data.attr("cells").attr("__getitem__")(0).attr("data").cast<std::vector<std::array<unsigned int, 4>>>();
@@ -31,7 +31,7 @@ MeshLoader::MeshLoader(const std::string filename, CellType cell_type) : m_cell_
 
             // Add all the cell permutations as vertices
             for(const auto & comb : m_combs){
-                auto normal = computeNormal(subtractArray(x[elem[comb[1]]], x[elem[comb[0]]]), subtractArray(x[elem[comb[2]]], x[elem[comb[0]]]));
+                auto normal = computeNormal(x[elem[comb[1]]] - x[elem[comb[0]]], x[elem[comb[2]]]- x[elem[comb[0]]]);
                 m_verts_and_normals.push_back(concatArray(x[elem[comb[0]]], normal));
                 m_verts_and_normals.push_back(concatArray(x[elem[comb[1]]], normal));
                 m_verts_and_normals.push_back(concatArray(x[elem[comb[2]]], normal));
@@ -92,23 +92,6 @@ void MeshLoader::computeCombinations() {
     m_combs.push_back({0, 3, 1});
     m_combs.push_back({0, 2, 3});
     m_combs.push_back({1, 3, 2});
-}
-
-inline std::array<float, 3> MeshLoader::computeNormal(std::array<float, 3> x, std::array<float, 3> y) {
-    std::array<float, 3> normal;
-    normal[0] = x[1] * y[2] - x[2] * y[1];
-    normal[1] = x[2] * y[0] - x[0] * y[2];
-    normal[2] = x[0] * y[1] - x[1] * y[0];
-    return normal;
-}
-
-inline std::array<float, 3> MeshLoader::subtractArray(std::array<float, 3> x, std::array<float, 3> y) {
-    std::array<float, 3> result{x[0]-y[0], x[1]-y[1], x[2]-y[2]};
-    return result;
-}
-
-inline std::array<float, 6> MeshLoader::concatArray(std::array<float, 3> x, std::array<float, 3> y) {
-    return {x[0], x[1], x[2], y[0], y[1], y[2]};
 }
 
 std::pair<glm::vec3, glm::vec3> MeshLoader::getBoundingBox() {

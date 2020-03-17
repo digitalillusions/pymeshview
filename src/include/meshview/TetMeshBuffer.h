@@ -15,14 +15,15 @@ public:
     TetMeshBuffer();
     ~TetMeshBuffer();
 
-    void bufferVertices(const std::vector<std::array<float, 3>> &vertices, const std::vector<std::array<int, 4>> &connectivity);
+    void bufferVertices(const std::vector<vec3> &vertices, const std::vector<std::array<int, 4>> &connectivity);
     void glDraw();
 
 private:
     unsigned int m_vbo, m_vao, m_ebo;
     unsigned int n_vertices;
 
-    std::vector<std::array<float, 6>> m_vertices;
+    std::vector<vec6> m_vertices_normals;
+    bbox_t m_bbox;
 };
 
 
