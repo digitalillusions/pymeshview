@@ -3,10 +3,37 @@
 //
 
 #include <meshview/Camera.h>
-#include <meshview/Common.h>
 #include <iostream>
 
 Camera::Camera(){
+    initDefaultParameters();
+
+    computeView();
+    computeAngles();
+}
+
+Camera::Camera(const glm::vec3 camPos, const glm::vec3 camFront, const glm::vec3 camUp) {
+    initDefaultParameters();
+
+    m_camPos = camPos;
+    m_camFront = glm::normalize(camFront);
+    m_camUp = glm::normalize(camUp);
+
+    computeCoordinateSystem();
+    computeAngles();
+}
+
+Camera::Camera(const glm::vec3 camPos, const float pitch, const float yaw) {
+    initDefaultParameters();
+
+    m_camPos = camPos;
+    m_pitch = pitch; constrainAngles();
+    m_yaw = yaw;
+
+    computeCamFront();
+}
+
+void Camera::initDefaultParameters() {
     m_fps_startup_counter = 2;
     m_cam_sensitivity = 0.05f;
     m_move_sensitivity = 100.f;
@@ -20,43 +47,6 @@ Camera::Camera(){
     m_camPos = glm::vec3(0.0, 0.0, 3.0);
     m_camFront = glm::vec3(0.0, 0.0, -1.0);
     m_camUp = glm::vec3(0.0, 1.0, 0.0);
-
-    computeView();
-    computeAngles();
-}
-
-Camera::Camera(const glm::vec3 camPos, const glm::vec3 camFront, const glm::vec3 camUp) {
-    m_fps_startup_counter = 2;
-    m_cam_sensitivity = 0.05f;
-    m_move_sensitivity = 100.f;
-
-    m_projection = glm::perspective(45.f, 800.f/600.f, 0.01f, 200.f);
-
-    m_camPos = camPos;
-    m_camFront = glm::normalize(camFront);
-    m_camUp = glm::normalize(camUp);
-
-    computeCoordinateSystem();
-    computeAngles();
-}
-
-Camera::Camera(const glm::vec3 camPos, const float pitch, const float yaw) {
-    m_fps_startup_counter = 2;
-    m_cam_sensitivity = 0.05f;
-    m_move_sensitivity = 100.f;
-
-    m_unit_x = glm::vec3(1.0, 0.0, 0.0);
-    m_unit_y = glm::vec3(0.0, 1.0, 0.0);
-    m_unit_z = glm::vec3(0.0, 0.0, 1.0);
-
-    m_projection = glm::perspective(45.f, 800.f/600.f, 0.01f, 200.f);
-
-    m_camPos = camPos;
-    m_pitch = pitch; constrainAngles();
-    m_yaw = yaw;
-    m_camUp = glm::vec3(0.0, 1.0, 0.0);
-
-    computeCamFront();
 }
 
 void Camera::computeView() {

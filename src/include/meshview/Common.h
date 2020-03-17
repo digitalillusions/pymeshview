@@ -5,6 +5,9 @@
 #ifndef LEARNOGL_COMMON_H
 #define LEARNOGL_COMMON_H
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <array>
 #include <iostream>
 #include <sstream>

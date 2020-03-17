@@ -1,7 +1,7 @@
 //
 // Created by sjeske on 3/9/20.
 //
-#include <glad/glad.h>
+#include "Common.h"
 
 #include <fstream>
 #include <string>

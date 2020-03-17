@@ -5,8 +5,7 @@
 #ifndef LEARNOGL_CAMERA_H
 #define LEARNOGL_CAMERA_H
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "Common.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -32,6 +31,7 @@ public:
 
     void lookAt(glm::vec3 eye, glm::vec3 target, glm::vec3 up);
 private:
+    void initDefaultParameters();
     void constrainAngles();
     void computeCoordinateSystem();
 
