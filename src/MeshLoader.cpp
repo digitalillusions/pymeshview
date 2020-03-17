@@ -16,8 +16,8 @@ MeshLoader::MeshLoader(const std::string filename, CellType cell_type) : m_cell_
     std::cout << "Loaded Meshio Module." << std::endl;
     auto data = meshio.attr("read")(filename);
     m_vertices.clear();
-    auto x = data.attr("points").cast<std::vector<vec3>>();
-    m_vertices = data.attr("points").cast<std::vector<vec3>>();
+    auto x = data.attr("points").cast<std::vector<std::array<float, 3>>>();
+    m_vertices = data.attr("points").cast<std::vector<std::array<float, 3>>>();
     computeCombinations();
     if (cell_type == CellType::TETRAHEDRAL){
         auto cells = data.attr("cells").attr("__getitem__")(0).attr("data").cast<std::vector<std::array<unsigned int, 4>>>();
@@ -99,8 +99,9 @@ std::pair<glm::vec3, glm::vec3> MeshLoader::getBoundingBox() {
 }
 
 void MeshLoader::computeBoundingBox() {
-    m_bbox_min = glm::vec3(0,0,0);
-    m_bbox_max = glm::vec3(0,0,0);
+    auto first = m_vertices[0];
+    m_bbox_min = glm::vec3(first[0],first[1],first[2]);
+    m_bbox_max = glm::vec3(first[0],first[1],first[2]);
     for(const auto & elem: m_vertices){
         for (int i = 0; i < 3; ++i) {
             if(elem[i] > m_bbox_max[i]){

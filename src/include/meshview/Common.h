@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <array>
+#include <vector>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -26,12 +27,6 @@ std::string printArray(std::array<T, size> arr){
         out << arr[i] << " ";
     }
     out << std::endl;
-    return out.str();
-}
-
-std::string printVec(glm::vec3 arr){
-    std::stringstream out;
-    out << arr[0] << " " << arr[1] << " " << arr[2] << std::endl;
     return out.str();
 }
 
@@ -74,6 +69,22 @@ inline std::array<T, size> operator+(std::array<T, size> x, std::array<T, size> 
     return result;
 }
 
+template<typename T>
+bbox_t computeBoundingBox(std::vector<std::array<T,3>> vertices){
+    bbox_t result;
+    result.first = vertices[0];
+    result.second = vertices[0];
+    for(const auto & elem: vertices){
+        for (int i = 0; i < 3; ++i) {
+            if(elem[i] > result.second[i]){
+                result.second[i] = elem[i];
+            } else if (elem[i] < result.first[i]){
+                result.first[i] = elem[i];
+            }
+        }
+    }
+    return result;
+}
 
 
 

@@ -20,7 +20,7 @@ public:
 
 private:
     unsigned int m_vbo, m_vao, m_ebo;
-    unsigned int n_vertices;
+    unsigned int m_nvertices;
 
     std::vector<vec6> m_vertices_normals;
     bbox_t m_bbox;

@@ -4,6 +4,7 @@
 
 #include <catch2/catch.hpp>
 #include <meshview/TetMeshBuffer.h>
+#include <meshview/Window.h>
 
 TEST_CASE("Correctly using Buffers", "[TetMeshBuffers]"){
     std::vector<std::array<float, 3>> vertices;
@@ -14,6 +15,7 @@ TEST_CASE("Correctly using Buffers", "[TetMeshBuffers]"){
     std::vector<std::array<int, 4>> connectivity;
     connectivity.push_back({0, 1, 2, 3});
 
+    Window window;
     TetMeshBuffer buffer;
     buffer.bufferVertices(vertices, connectivity);
 }
