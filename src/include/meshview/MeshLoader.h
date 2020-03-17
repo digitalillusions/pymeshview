@@ -5,7 +5,7 @@
 #ifndef LEARNOGL_MESHLOADER_H
 #define LEARNOGL_MESHLOADER_H
 
-#include "Common.h"
+#include <meshview/Common.h>
 #include <vector>
 #include <array>
 #include <pybind11/pybind11.h>

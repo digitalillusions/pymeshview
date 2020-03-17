@@ -5,10 +5,10 @@
 #ifndef PYMESHVIEWER_WINDOW_H
 #define PYMESHVIEWER_WINDOW_H
 
-#include "Common.h"
-#include "ShaderProgram.h"
-#include "Camera.h"
-#include "TetMeshBuffer.h"
+#include <meshview/Common.h>
+#include <meshview/ShaderProgram.h>
+#include <meshview/Camera.h>
+#include <meshview/TetMeshBuffer.h>
 
 #include <memory>
 

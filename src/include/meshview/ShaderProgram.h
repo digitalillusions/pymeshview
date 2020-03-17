@@ -1,7 +1,7 @@
 //
 // Created by sjeske on 3/9/20.
 //
-#include "Common.h"
+#include <meshview/Common.h>
 
 #include <fstream>
 #include <string>

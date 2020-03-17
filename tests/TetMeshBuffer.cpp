@@ -20,4 +20,7 @@ TEST_CASE("Correctly using Buffers", "[TetMeshBuffers]"){
     Window window;
     TetMeshBuffer buffer;
     buffer.bufferVertices(vertices, connectivity);
+
+    // Test case passes when this point is reached
+    REQUIRE(true);
 }

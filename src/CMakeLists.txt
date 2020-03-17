@@ -1,10 +1,10 @@
-add_library(meshview Camera.cpp ShaderProgram.cpp Window.cpp TetMeshBuffer.cpp)
+add_library(meshview Camera.cpp ShaderProgram.cpp Window.cpp TetMeshBuffer.cpp include/meshview/Common.h)
 target_include_directories(meshview PUBLIC include)
 target_link_libraries(meshview PUBLIC glfw glm glad stb )
 
 add_library(meshloader MeshLoader.cpp)
 target_include_directories(meshloader PUBLIC include)
-target_link_libraries(meshloader PRIVATE glm pybind11::embed)
+target_link_libraries(meshloader PRIVATE glfw glm glad pybind11::embed)
 
 add_custom_command(TARGET meshview POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E create_symlink

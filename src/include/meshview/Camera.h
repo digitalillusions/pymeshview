@@ -5,7 +5,7 @@
 #ifndef LEARNOGL_CAMERA_H
 #define LEARNOGL_CAMERA_H
 
-#include "Common.h"
+#include <meshview/Common.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
