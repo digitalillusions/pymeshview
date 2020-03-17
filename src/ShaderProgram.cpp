@@ -31,7 +31,7 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
         vertex_source = vertex_sstream.str();
         fragment_source = fragment_sstream.str();
 
-        // Handle geometry shader if it exists
+        // Handle geometry m_shader if it exists
         if (geometryShader != nullptr){
             geometry_fstream.open(geometryShader);
             std::stringstream geometry_sstream;
@@ -40,7 +40,7 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
             geometry_source = geometry_sstream.str();
         }
     } catch (std::ifstream::failure ex){
-        std::cout << "Error while reading shader! Error code: " << ex.what() << std::endl;
+        std::cout << "Error while reading m_shader! Error code: " << ex.what() << std::endl;
     }
 
     const char * vertex_source_cstr = vertex_source.c_str();
@@ -49,7 +49,7 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
     int success;
     char infoLog[512];
 
-    // Compile vertex shader and check for errors
+    // Compile vertex m_shader and check for errors
     unsigned int vertex_shader_id, fragment_shader_id, geometry_shader_id;
     vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader_id, 1, &vertex_source_cstr, NULL);
@@ -58,10 +58,10 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
     glGetShaderiv(vertex_shader_id, GL_COMPILE_STATUS, &success);
     if (!success){
         glGetShaderInfoLog(vertex_shader_id, 512, NULL, infoLog);
-        std::cout << "Vertex shader compilation failed: " << infoLog << std::endl;
+        std::cout << "Vertex m_shader compilation failed: " << infoLog << std::endl;
     }
 
-    // Compile fragment shader and check for errors
+    // Compile fragment m_shader and check for errors
     fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader_id, 1, &fragment_source_cstr, NULL);
     glCompileShader(fragment_shader_id);
@@ -69,7 +69,7 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
     glGetShaderiv(fragment_shader_id, GL_COMPILE_STATUS, &success);
     if (!success){
         glGetShaderInfoLog(fragment_shader_id, 512, NULL, infoLog);
-        std::cout << "Fragment shader compilation failed: " << infoLog << std::endl;
+        std::cout << "Fragment m_shader compilation failed: " << infoLog << std::endl;
     }
 
     if (geometry_source_cstr != nullptr){
@@ -79,7 +79,7 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
         glGetShaderiv(geometry_shader_id, GL_COMPILE_STATUS, &success);
         if (!success){
             glGetShaderInfoLog(geometry_shader_id, 512, NULL, infoLog);
-            std::cout << "Geometry shader compilation failed: " << infoLog << std::endl;
+            std::cout << "Geometry m_shader compilation failed: " << infoLog << std::endl;
         }
     }
 

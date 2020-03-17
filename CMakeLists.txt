@@ -8,6 +8,8 @@ if (MINGW)
     add_compile_options(-Wa,-mbig-obj)
 endif ()
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 # Add external dependencies
 add_subdirectory(extern/glfw)
 add_subdirectory(extern/glad)

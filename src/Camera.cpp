@@ -83,7 +83,7 @@ void Camera::computeAngles() {
     constrainAngles();
     float x_component = glm::dot(m_camFront, m_unit_x);
     m_yaw = glm::degrees(acos(x_component/cos(glm::radians(m_pitch))));
-    std::cout << "New pitch:" << m_pitch << ", new yaw: " << m_yaw << std::endl;
+    // std::cout << "Pitch:" << m_pitch << ", Yaw: " << m_yaw << std::endl;
 }
 
 void Camera::computeCamFront() {
@@ -129,7 +129,7 @@ void Camera::fpsCam(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
         delta -= glm::normalize(glm::cross(m_camFront, m_camUp));
     }
-    // delta.y = 0.0; // Uncomment for true fps cam
+    // delta.y = 0.0; // Uncomment for true fps m_camera
     m_camPos += delta*deltaMove;
 
     // Mouse movement
@@ -174,6 +174,11 @@ glm::mat4 Camera::getProjection() {
     return m_projection;
 }
 
+void Camera::alignCam(GLFWwindow *window, bbox_t bbox) {
+    std::pair<glm::vec3, glm::vec3> box = std::make_pair(vec3FromArray(bbox.first), vec3FromArray(bbox.second));
+    alignCam(window, box);
+}
+
 void Camera::alignCam(GLFWwindow *window, std::pair<glm::vec3, glm::vec3> bbox) {
     // TODO: hardcoded field of view in degrees as specified in the perspective projection matrix also move the computations to precomputations
     float fov = 45.;
@@ -184,7 +189,7 @@ void Camera::alignCam(GLFWwindow *window, std::pair<glm::vec3, glm::vec3> bbox) 
     mid = (bbox.first + bbox.second)/2.f;
     delta = (bbox.second - bbox.first);
 
-    auto distances = delta/(2.f*tan_half_fov) + 20.f;
+    auto distances = delta/(2.f*tan_half_fov) + 2.f;
 
     // pressing 0 will align with the z axis and show the xy plane
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_KP_0) == GLFW_PRESS){
@@ -232,3 +237,4 @@ void Camera::computeCoordinateSystem() {
     // glm::vec3 yaxis = glm::normalize(glm::cross(zaxis, xaxis));
 
 }
+

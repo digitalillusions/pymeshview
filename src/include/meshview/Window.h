@@ -6,22 +6,47 @@
 #define PYMESHVIEWER_WINDOW_H
 
 #include "Common.h"
+#include "ShaderProgram.h"
+#include "Camera.h"
+#include "TetMeshBuffer.h"
+
+#include <memory>
 
 class Window {
 public:
     Window();
-    Window(int width, int height);
+    Window(int width, int height, bool visible=true);
     ~Window();
 
-    bool shouldClose();
+    void setPreFrameCallback(void(*callback)(GLFWwindow*));
+    void setPostFrameCallback(void(*callback)(GLFWwindow*));
+
+    void setData(std::shared_ptr<TetMeshBuffer> data);
+
+    void run(int frames);
 
 private:
+    bool m_visible;
     int m_default_width, m_default_height;
     GLFWwindow * m_window;
+    std::unique_ptr<ShaderProgram> m_shader;
+    std::unique_ptr<Camera> m_camera;
+    std::shared_ptr<TetMeshBuffer> m_data;
+
+    glm::mat4 m_model, m_model_inv;
+
+    void (*m_preframe_callback)(GLFWwindow*);
+    void (*m_postframe_callback)(GLFWwindow*);
 
     void initDefaultParameters();
+    void initShader();
+    void initCamera();
+    void initData();
     void initWindow();
-    void framebufferSizeCallback(GLFWwindow*, int, int);
+
+    void loop();
+
+    void convenienceCallback();
 };
 
 

@@ -28,6 +28,7 @@ public:
 
     void fpsCam(GLFWwindow* window);
     void alignCam(GLFWwindow* window, std::pair<glm::vec3, glm::vec3> bbox);
+    void alignCam(GLFWwindow* window, bbox_t bbox);
 
     void lookAt(glm::vec3 eye, glm::vec3 target, glm::vec3 up);
 private:

@@ -70,6 +70,11 @@ inline std::array<T, size> operator+(std::array<T, size> x, std::array<T, size> 
 }
 
 template<typename T>
+inline glm::vec3 vec3FromArray(std::array<T, 3> array){
+    return glm::vec3(array[0], array[1], array[2]);
+}
+
+template<typename T>
 bbox_t computeBoundingBox(std::vector<std::array<T,3>> vertices){
     bbox_t result;
     result.first = vertices[0];

@@ -5,10 +5,18 @@
 #include "meshview/TetMeshBuffer.h"
 
 TetMeshBuffer::TetMeshBuffer() {
+    // Init default parameters
     m_nvertices = 0;
+    m_bbox = std::make_pair(vec3{0.0, 0.0, 0.0}, vec3{0.0, 0.0, 0.0});
+    m_vertices_normals.clear();
+    m_model = glm::mat4(1.0);
+    m_model_inv = glm::mat4(1.0);
+
     glGenBuffers(1, &m_vbo);
     glGenBuffers(1, &m_ebo);
     glGenVertexArrays(1, &m_vao);
+
+    bufferDefaultVertices();
 }
 
 TetMeshBuffer::~TetMeshBuffer() {
@@ -39,6 +47,9 @@ void TetMeshBuffer::bufferVertices(const std::vector<vec3> &vertices,
     // Store the effective number of vertices
     m_nvertices = m_vertices_normals.size();
 
+    // Compute the bounding box
+    m_bbox = computeBoundingBox(vertices);
+
     // Bind the vertex array and copy the data
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -52,8 +63,38 @@ void TetMeshBuffer::bufferVertices(const std::vector<vec3> &vertices,
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6* sizeof(float), (void*)(sizeof(float) * 3));
     glEnableVertexAttribArray(1);
 
+    // Disable vertex array
+    glBindVertexArray(0);
 }
 
 void TetMeshBuffer::glDraw() {
+    glBindVertexArray(m_vao);
+    glDrawArrays(GL_TRIANGLES, 0, m_nvertices);
+    glBindVertexArray(0);
+}
 
+glm::mat4 TetMeshBuffer::getModel() {
+    return m_model;
+}
+
+glm::mat4 TetMeshBuffer::getModelInv() {
+    return m_model_inv;
+}
+
+bbox_t TetMeshBuffer::getBbox() {
+    return m_bbox;
+}
+
+void TetMeshBuffer::bufferDefaultVertices() {
+    // Set up default data
+    std::vector<std::array<float, 3>> vertices;
+    vertices.push_back({-0.5, -0.5, -0.5});
+    vertices.push_back({ 0.5, -0.5, -0.5});
+    vertices.push_back({ 0.0, -0.5,  0.5});
+    vertices.push_back({ 0.0,  0.5,  0.0});
+    std::vector<std::array<int, 4>> connectivity;
+    connectivity.push_back({0, 1, 2, 3});
+
+    // Add it to the buffers
+    bufferVertices(vertices, connectivity);
 }

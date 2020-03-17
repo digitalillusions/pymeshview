@@ -13,10 +13,10 @@
 
 class ShaderProgram{
 public:
-    // Compile vertex and fragment shader and make a shader program
+    // Compile vertex and fragment m_shader and make a m_shader program
     ShaderProgram(const char * vertexShader, const char * fragmentShader, const char * geometryShader = nullptr);
 
-    // Activate the shader for usage in opengl
+    // Activate the m_shader for usage in opengl
     void use();
 
     // Get the program ID
