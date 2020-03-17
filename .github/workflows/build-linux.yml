@@ -29,5 +29,3 @@ jobs:
       run: cmake ../pymeshview
     - name: CMake Build Step
       run: cmake --build .
-    - name: Run Tests
-      run: ./test
