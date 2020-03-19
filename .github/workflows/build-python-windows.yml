@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Python CI Linux
+name: Windows CI Linux
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
 # events but only for the master branch
@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build-linux:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         python-version: [3.6, 3.7]
@@ -32,8 +32,6 @@ jobs:
         auth_header="$(git config --local --get http.https://github.com/.extraheader)"
         git submodule sync --recursive
         git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-    - name: Install Dependencies for glfw
-      run: sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
     
     # Set up python
     - name: Set up Python ${{ matrix.python-version }}
@@ -53,6 +51,6 @@ jobs:
     - name: Upload compiled wheel
       uses: actions/upload-artifact@master
       with:
-        name: pymeshview-ubuntu-${{ matrix.python-version }}
+        name: pymeshview-windows-${{ matrix.python-version }}
         path: build/dist
       if: always()
