@@ -41,13 +41,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    # List contents of directory and current path
-    - name: List contents and path
-      run: |
-        pwd
-        ls -al
-
     # Change directory and run setup py
-    - name: Change directory and run setup py
-      run: cd pymeshview && python setup.py bdist_wheel
+    - name: Run setup py
+      run: python setup.py bdist_wheel
 
