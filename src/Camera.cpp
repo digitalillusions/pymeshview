@@ -5,14 +5,14 @@
 #include <meshview/Camera.h>
 #include <iostream>
 
-Camera::Camera(){
+meshview::Camera::Camera(){
     initDefaultParameters();
 
     computeView();
     computeAngles();
 }
 
-Camera::Camera(const glm::vec3 camPos, const glm::vec3 camFront, const glm::vec3 camUp) {
+meshview::Camera::Camera(const glm::vec3 camPos, const glm::vec3 camFront, const glm::vec3 camUp) {
     initDefaultParameters();
 
     m_camPos = camPos;
@@ -23,7 +23,7 @@ Camera::Camera(const glm::vec3 camPos, const glm::vec3 camFront, const glm::vec3
     computeAngles();
 }
 
-Camera::Camera(const glm::vec3 camPos, const float pitch, const float yaw) {
+meshview::Camera::Camera(const glm::vec3 camPos, const float pitch, const float yaw) {
     initDefaultParameters();
 
     m_camPos = camPos;
@@ -33,7 +33,7 @@ Camera::Camera(const glm::vec3 camPos, const float pitch, const float yaw) {
     computeCamFront();
 }
 
-void Camera::initDefaultParameters() {
+void meshview::Camera::initDefaultParameters() {
     m_fps_startup_counter = 2;
     m_cam_sensitivity = 0.05f;
     m_move_sensitivity = 100.f;
@@ -49,7 +49,7 @@ void Camera::initDefaultParameters() {
     m_camUp = glm::vec3(0.0, 1.0, 0.0);
 }
 
-void Camera::computeView() {
+void meshview::Camera::computeView() {
     // m_view = glm::lookAt(m_camPos, m_camPos + m_camFront, m_camUp);
 
     auto zaxis =  -m_camFront;
@@ -77,7 +77,7 @@ void Camera::computeView() {
 
 }
 
-void Camera::computeAngles() {
+void meshview::Camera::computeAngles() {
     float y_component = glm::dot(m_camFront, m_unit_y);
     m_pitch = glm::degrees(asin(y_component));
     constrainAngles();
@@ -86,7 +86,7 @@ void Camera::computeAngles() {
     // std::cout << "Pitch:" << m_pitch << ", Yaw: " << m_yaw << std::endl;
 }
 
-void Camera::computeCamFront() {
+void meshview::Camera::computeCamFront() {
     glm::vec3 direction;
 
     direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
@@ -98,7 +98,7 @@ void Camera::computeCamFront() {
     m_camFront = glm::normalize(direction);
 }
 
-void Camera::lookAt(const glm::vec3 eye, const glm::vec3 target, const glm::vec3 up) {
+void meshview::Camera::lookAt(const glm::vec3 eye, const glm::vec3 target, const glm::vec3 up) {
     m_camPos = eye;
     m_camFront = glm::normalize(target - eye);
     m_camUp = glm::normalize(up);
@@ -108,7 +108,7 @@ void Camera::lookAt(const glm::vec3 eye, const glm::vec3 target, const glm::vec3
     computeView();
 }
 
-void Camera::fpsCam(GLFWwindow *window) {
+void meshview::Camera::fpsCam(GLFWwindow *window) {
     // Body movement
     auto time = (float)glfwGetTime();
     if (m_fps_startup_counter){
@@ -152,7 +152,7 @@ void Camera::fpsCam(GLFWwindow *window) {
     computeCamFront();
 }
 
-void Camera::constrainAngles() {
+void meshview::Camera::constrainAngles() {
     if (m_pitch > 89.){
         m_pitch = 89;
     }
@@ -161,25 +161,25 @@ void Camera::constrainAngles() {
     }
 }
 
-glm::mat4 Camera::getView() {
+glm::mat4 meshview::Camera::getView() {
     computeView();
     return m_view;
 }
 
-glm::vec3 Camera::getPos() {
+glm::vec3 meshview::Camera::getPos() {
     return m_camPos;
 }
 
-glm::mat4 Camera::getProjection() {
+glm::mat4 meshview::Camera::getProjection() {
     return m_projection;
 }
 
-void Camera::alignCam(GLFWwindow *window, bbox_t bbox) {
+void meshview::Camera::alignCam(GLFWwindow *window, bbox_t bbox) {
     std::pair<glm::vec3, glm::vec3> box = std::make_pair(vec3FromArray(bbox.first), vec3FromArray(bbox.second));
     alignCam(window, box);
 }
 
-void Camera::alignCam(GLFWwindow *window, std::pair<glm::vec3, glm::vec3> bbox) {
+void meshview::Camera::alignCam(GLFWwindow *window, std::pair<glm::vec3, glm::vec3> bbox) {
     // TODO: hardcoded field of view in degrees as specified in the perspective projection matrix also move the computations to precomputations
     float fov = 45.;
     float tan_half_fov = tanf(fov/2.f);
@@ -224,7 +224,7 @@ void Camera::alignCam(GLFWwindow *window, std::pair<glm::vec3, glm::vec3> bbox) 
 
 }
 
-void Camera::computeCoordinateSystem() {
+void meshview::Camera::computeCoordinateSystem() {
     // To account for different UP directions, the current coordinate system is computed
     m_unit_y = glm::normalize(m_camUp);
     glm::vec3 z_temp = glm::normalize(m_camFront);

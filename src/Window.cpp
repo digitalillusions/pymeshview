@@ -5,7 +5,7 @@
 #include <meshview/Window.h>
 #include <iostream>
 
-Window::Window() {
+meshview::Window::Window() {
     // Init default parameters
     initDefaultParameters();
 
@@ -18,7 +18,7 @@ Window::Window() {
     initData();
 }
 
-Window::Window(int width, int height, bool visible) {
+meshview::Window::Window(int width, int height, bool visible) {
     // Init default parameters
     initDefaultParameters();
     m_default_width = width;
@@ -34,26 +34,26 @@ Window::Window(int width, int height, bool visible) {
     initData();
 }
 
-void Window::initShader() {
-    m_shader = std::make_unique<ShaderProgram>("shaders/lighting.vs", "shaders/lighting.fs");
+void meshview::Window::initShader() {
+    m_shader = std::make_unique<meshview::ShaderProgram>("shaders/lighting.vs", "shaders/lighting.fs");
 }
 
-void Window::initCamera() {
-    m_camera = std::make_unique<Camera>();
+void meshview::Window::initCamera() {
+    m_camera = std::make_unique<meshview::Camera>();
     m_camera->lookAt(glm::vec3(0.0, 0.0, 5.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 }
 
-void Window::initData(){
+void meshview::Window::initData(){
     // Add it to the data object
-    m_data = std::make_shared<TetMeshBuffer>();
+    m_data = std::make_shared<meshview::TetMeshBuffer>();
 }
 
-Window::~Window() {
+meshview::Window::~Window() {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
-void Window::run(int frames = 0) {
+void meshview::Window::run(int frames = 0) {
     if (frames){
         for (int i = 0; i < frames; ++i) {
             loop();
@@ -65,7 +65,7 @@ void Window::run(int frames = 0) {
     }
 }
 
-void Window::loop() {
+void meshview::Window::loop() {
     m_preframe_callback(m_window);
 
     glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -92,7 +92,7 @@ void Window::loop() {
     m_postframe_callback(m_window);
 }
 
-void Window::initWindow() {
+void meshview::Window::initWindow() {
     // Initialize glfw
     if(!glfwInit()){
         std::cout << "Could not initialize glfw." << std::endl;
@@ -128,7 +128,7 @@ void Window::initWindow() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void Window::initDefaultParameters() {
+void meshview::Window::initDefaultParameters() {
     m_visible = true;
     m_default_width = 800;
     m_default_height = 600;
@@ -140,20 +140,20 @@ void Window::initDefaultParameters() {
     m_model_inv = glm::mat4(1);
 }
 
-void Window::setPreFrameCallback(void (*callback)(GLFWwindow *)) {
+void meshview::Window::setPreFrameCallback(void (*callback)(GLFWwindow *)) {
     m_preframe_callback = callback;
 }
 
-void Window::setPostFrameCallback(void (*callback)(GLFWwindow *)) {
+void meshview::Window::setPostFrameCallback(void (*callback)(GLFWwindow *)) {
     m_postframe_callback = callback;
 }
 
-void Window::convenienceCallback() {
+void meshview::Window::convenienceCallback() {
     if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(m_window, GLFW_TRUE);
     }
 }
 
-void Window::setData(std::shared_ptr<TetMeshBuffer> data) {
+void meshview::Window::setData(std::shared_ptr<meshview::TetMeshBuffer> data) {
     m_data = data;
 }

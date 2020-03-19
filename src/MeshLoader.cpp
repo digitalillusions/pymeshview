@@ -9,7 +9,7 @@
 #include <meshview/MeshLoader.h>
 #include <iostream>
 
-MeshLoader::MeshLoader(const std::string filename, CellType cell_type) : m_cell_type(cell_type){
+meshview::MeshLoader::MeshLoader(const std::string filename, meshview::CellType cell_type) : m_cell_type(cell_type){
     py::scoped_interpreter m_guard{};
     std::cout << "Attempting to load module." << std::endl;
     auto meshio = py::module::import("meshio");
@@ -19,7 +19,7 @@ MeshLoader::MeshLoader(const std::string filename, CellType cell_type) : m_cell_
     auto x = data.attr("points").cast<std::vector<std::array<float, 3>>>();
     m_vertices = data.attr("points").cast<std::vector<std::array<float, 3>>>();
     computeCombinations();
-    if (cell_type == CellType::TETRAHEDRAL){
+    if (cell_type == meshview::CellType::TETRAHEDRAL){
         auto cells = data.attr("cells").attr("__getitem__")(0).attr("data").cast<std::vector<std::array<unsigned int, 4>>>();
         m_cells.clear();
         for(const auto & elem : cells){
@@ -52,7 +52,7 @@ MeshLoader::MeshLoader(const std::string filename, CellType cell_type) : m_cell_
     std::cout << "Last Vector check: " << m_vertices[last_vec][0] << " " << m_vertices[last_vec][1] << " " << m_vertices[last_vec][2] << std::endl;
 }
 
-void MeshLoader::testPointers() {
+void meshview::MeshLoader::testPointers() {
     std::cout << "First cell consisting of points:" << std::endl;
     for (const auto & index : m_cells[0]){
         std::cout << m_vertices[index][0] << " " << m_vertices[index][1] << " " << m_vertices[index][2] << std::endl;
@@ -63,42 +63,42 @@ void MeshLoader::testPointers() {
     }
 }
 
-float *MeshLoader::getVertices() {
+float *meshview::MeshLoader::getVertices() {
     return &m_vertices[0][0];
 }
 
-unsigned int MeshLoader::getNVertices() {
+unsigned int meshview::MeshLoader::getNVertices() {
     return m_vertices.size();
 }
 
-unsigned int *MeshLoader::getCells() {
+unsigned int *meshview::MeshLoader::getCells() {
     return &m_cells[0][0];
 }
 
-unsigned int MeshLoader::getNCells() {
+unsigned int meshview::MeshLoader::getNCells() {
     return m_cells.size();
 }
 
-float *MeshLoader::getVertsAndNormals() {
+float *meshview::MeshLoader::getVertsAndNormals() {
     return &m_verts_and_normals[0][0];
 }
 
-unsigned int MeshLoader::getNVertsAndNormals() {
+unsigned int meshview::MeshLoader::getNVertsAndNormals() {
     return m_verts_and_normals.size();
 }
 
-void MeshLoader::computeCombinations() {
+void meshview::MeshLoader::computeCombinations() {
     m_combs.push_back({0, 1, 2});
     m_combs.push_back({0, 3, 1});
     m_combs.push_back({0, 2, 3});
     m_combs.push_back({1, 3, 2});
 }
 
-std::pair<glm::vec3, glm::vec3> MeshLoader::getBoundingBox() {
+std::pair<glm::vec3, glm::vec3> meshview::MeshLoader::getBoundingBox() {
     return std::pair<glm::vec3, glm::vec3>(m_bbox_min, m_bbox_max);
 }
 
-void MeshLoader::computeBoundingBox() {
+void meshview::MeshLoader::computeBoundingBox() {
     auto first = m_vertices[0];
     m_bbox_min = glm::vec3(first[0],first[1],first[2]);
     m_bbox_max = glm::vec3(first[0],first[1],first[2]);

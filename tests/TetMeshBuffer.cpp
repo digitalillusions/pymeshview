@@ -17,8 +17,8 @@ TEST_CASE("Correctly using Buffers", "[TetMeshBuffers]"){
     connectivity.push_back({0, 1, 2, 3});
 
     // Make window and buffer for testing
-    Window window;
-    TetMeshBuffer buffer;
+    meshview::Window window;
+    meshview::TetMeshBuffer buffer;
     buffer.bufferVertices(vertices, connectivity);
 
     // Test case passes when this point is reached

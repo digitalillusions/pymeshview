@@ -5,7 +5,7 @@
 #include <meshview/ShaderProgram.h>
 
 
-ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShader, const char* geometryShader){
+meshview::ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShader, const char* geometryShader){
     std::string vertex_source, fragment_source, geometry_source;
     std::ifstream vertex_fstream, fragment_fstream, geometry_fstream;
 
@@ -106,39 +106,39 @@ ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShad
 
 }
 
-void ShaderProgram::use() {
+void meshview::ShaderProgram::use() {
     glUseProgram(programID);
 }
 
 // Get the program ID
-unsigned int ShaderProgram::getProgramID() const{
+unsigned int meshview::ShaderProgram::getProgramID() const{
     return programID;
 };
 
-void ShaderProgram::setBool(const std::string &name, bool value) const{
+void meshview::ShaderProgram::setBool(const std::string &name, bool value) const{
     glUniform1i(glGetUniformLocation(programID, name.c_str()), (int)value);
 }
 
-void ShaderProgram::setInt(const std::string &name, int value) const{
+void meshview::ShaderProgram::setInt(const std::string &name, int value) const{
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void ShaderProgram::setFloat(const std::string &name, float value) const{
+void meshview::ShaderProgram::setFloat(const std::string &name, float value) const{
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void ShaderProgram::setVec3fv(const std::string &name, const float *value) const{
+void meshview::ShaderProgram::setVec3fv(const std::string &name, const float *value) const{
     glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, value);
 }
 
-void ShaderProgram::setVec4fv(const std::string &name, const float *value) const{
+void meshview::ShaderProgram::setVec4fv(const std::string &name, const float *value) const{
     glUniform4fv(glGetUniformLocation(programID, name.c_str()), 1, value);
 }
 
-void ShaderProgram::setMat3fv(const std::string &name, const float *value) const{
+void meshview::ShaderProgram::setMat3fv(const std::string &name, const float *value) const{
     glUniformMatrix3fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, value);
 }
 
-void ShaderProgram::setMat4fv(const std::string &name, const float *value) const{
+void meshview::ShaderProgram::setMat4fv(const std::string &name, const float *value) const{
     glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, value);
 }

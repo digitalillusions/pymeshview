@@ -6,7 +6,7 @@
 #include <meshview/Window.h>
 
 TEST_CASE("Creation and deletion of window object", "[window]"){
-    Window window;
+    meshview::Window window;
     window.run(1);
 
     // Test case passes when this point is reached
@@ -15,7 +15,7 @@ TEST_CASE("Creation and deletion of window object", "[window]"){
 
 
 TEST_CASE("Creation and deletion of window object with size parameters", "[window]"){
-    Window window(800, 600);
+    meshview::Window window(800, 600);
     window.run(1);
 
     // Test case passes when this point is reached
@@ -23,7 +23,7 @@ TEST_CASE("Creation and deletion of window object with size parameters", "[windo
 }
 
 TEST_CASE("Creation of an invisible window with size params", "[window]"){
-    Window window(800, 600, false);
+    meshview::Window window(800, 600, false);
     window.run(1);
 
     // Test case passes when this point is reached

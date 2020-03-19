@@ -21,6 +21,9 @@ add_subdirectory(extern/Catch2)
 # Add main source code
 add_subdirectory(src)
 
+# Add python bindings
+add_subdirectory(pybind)
+
 # Add example code executables
 add_subdirectory(examples)
 

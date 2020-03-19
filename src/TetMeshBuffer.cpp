@@ -2,9 +2,9 @@
 // Created by Stefan on 17.03.2020.
 //
 
-#include "meshview/TetMeshBuffer.h"
+#include <meshview/TetMeshBuffer.h>
 
-TetMeshBuffer::TetMeshBuffer() {
+meshview::TetMeshBuffer::TetMeshBuffer() {
     // Init default parameters
     m_nvertices = 0;
     m_bbox = std::make_pair(vec3{0.0, 0.0, 0.0}, vec3{0.0, 0.0, 0.0});
@@ -19,14 +19,14 @@ TetMeshBuffer::TetMeshBuffer() {
     bufferDefaultVertices();
 }
 
-TetMeshBuffer::~TetMeshBuffer() {
+meshview::TetMeshBuffer::~TetMeshBuffer() {
     glDeleteBuffers(1, &m_vbo);
     glDeleteBuffers(1, &m_ebo);
     glDeleteVertexArrays(1, &m_vao);
 }
 
-void TetMeshBuffer::bufferVertices(const std::vector<vec3> &vertices,
-                                   const std::vector<std::array<int, 4>> &connectivity) {
+void meshview::TetMeshBuffer::bufferVertices(const std::vector<vec3> &vertices,
+                                             const std::vector<std::array<int, 4>> &connectivity) {
     // Compute the triangle combinations on the element
     std::vector<std::array<unsigned int, 4>> tet_combs;
     tet_combs.push_back({0, 1, 2});
@@ -67,25 +67,25 @@ void TetMeshBuffer::bufferVertices(const std::vector<vec3> &vertices,
     glBindVertexArray(0);
 }
 
-void TetMeshBuffer::glDraw() {
+void meshview::TetMeshBuffer::glDraw() {
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, m_nvertices);
     glBindVertexArray(0);
 }
 
-glm::mat4 TetMeshBuffer::getModel() {
+glm::mat4 meshview::TetMeshBuffer::getModel() {
     return m_model;
 }
 
-glm::mat4 TetMeshBuffer::getModelInv() {
+glm::mat4 meshview::TetMeshBuffer::getModelInv() {
     return m_model_inv;
 }
 
-bbox_t TetMeshBuffer::getBbox() {
+bbox_t meshview::TetMeshBuffer::getBbox() {
     return m_bbox;
 }
 
-void TetMeshBuffer::bufferDefaultVertices() {
+void meshview::TetMeshBuffer::bufferDefaultVertices() {
     // Set up default data
     std::vector<std::array<float, 3>> vertices;
     vertices.push_back({-0.5, -0.5, -0.5});
