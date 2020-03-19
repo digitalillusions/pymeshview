@@ -35,12 +35,12 @@ meshview::Window::Window(int width, int height, bool visible) {
 }
 
 void meshview::Window::initShader() {
-    m_shader = std::make_unique<meshview::ShaderProgram>();
+    m_shader = std::unique_ptr<meshview::ShaderProgram>(new meshview::ShaderProgram());
     // m_shader = std::make_unique<meshview::ShaderProgram>("shaders/lighting.vs", "shaders/lighting.fs");
 }
 
 void meshview::Window::initCamera() {
-    m_camera = std::make_unique<meshview::Camera>();
+    m_camera = std::unique_ptr<meshview::Camera>(new meshview::Camera());
     m_camera->lookAt(glm::vec3(0.0, 0.0, 5.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 }
 
