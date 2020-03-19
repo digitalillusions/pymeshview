@@ -25,8 +25,8 @@ meshview::TetMeshBuffer::~TetMeshBuffer() {
     glDeleteVertexArrays(1, &m_vao);
 }
 
-void meshview::TetMeshBuffer::bufferVertices(const std::vector<vec3> &vertices,
-                                             const std::vector<std::array<int, 4>> &connectivity) {
+void meshview::TetMeshBuffer::bufferCells(const std::vector<vec3> &vertices,
+                                          const std::vector<std::array<int, 4>> &connectivity) {
     // Compute the triangle combinations on the element
     std::vector<std::array<unsigned int, 4>> tet_combs;
     tet_combs.push_back({0, 1, 2});
@@ -96,5 +96,5 @@ void meshview::TetMeshBuffer::bufferDefaultVertices() {
     connectivity.push_back({0, 1, 2, 3});
 
     // Add it to the buffers
-    bufferVertices(vertices, connectivity);
+    bufferCells(vertices, connectivity);
 }

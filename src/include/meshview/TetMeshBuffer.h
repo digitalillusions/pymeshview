@@ -16,7 +16,7 @@ namespace meshview {
         TetMeshBuffer();
         ~TetMeshBuffer();
 
-        void bufferVertices(const std::vector<vec3> &vertices, const std::vector<std::array<int, 4>> &connectivity);
+        void bufferCells(const std::vector<vec3> &vertices, const std::vector<std::array<int, 4>> &connectivity);
         void glDraw();
 
         glm::mat4 getModel();

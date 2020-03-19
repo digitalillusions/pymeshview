@@ -6,9 +6,11 @@
 
 namespace py = pybind11;
 
-void WindowModule(py::module);
+void Window(py::module);
+void TetMeshBuffer(py::module);
 
 PYBIND11_MODULE(pymeshview, m){
     m.attr("Hello") = 43;
-    WindowModule(m);
+    Window(m);
+    TetMeshBuffer(m);
 }

@@ -4,6 +4,66 @@
 
 #include <meshview/ShaderProgram.h>
 
+meshview::ShaderProgram::ShaderProgram() {
+    const char * vertex_shader_source = "#version 330 core\n"
+                                        "\n"
+                                        "layout (location = 0) in vec3 aPos;\n"
+                                        "layout (location = 1) in vec3 aNormal;\n"
+                                        "\n"
+                                        "out vec3 Normal;\n"
+                                        "out vec3 FragPos;\n"
+                                        "\n"
+                                        "uniform mat4 model;\n"
+                                        "uniform mat4 modelInv;\n"
+                                        "uniform mat4 view;\n"
+                                        "uniform mat4 projection;\n"
+                                        "\n"
+                                        "void main(){\n"
+                                        "    gl_Position = projection * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+                                        "    FragPos = (model * vec4(aPos, 1.0)).xyz;\n"
+                                        "    Normal = mat3(transpose(modelInv)) * aNormal;\n"
+                                        "}";
+
+    const char * fragment_shader_source = "#version 330 core\n"
+                                          "\n"
+                                          "in vec3 Normal;\n"
+                                          "in vec3 FragPos;\n"
+                                          "\n"
+                                          "out vec4 FragColor;\n"
+                                          "\n"
+                                          "uniform vec3 viewPos;\n"
+                                          "uniform vec3 lightPos;\n"
+                                          "// uniform vec3 lightColor;\n"
+                                          "// uniform vec3 objectColor;\n"
+                                          "\n"
+                                          "\n"
+                                          "void main(){\n"
+                                          "    vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
+                                          "    vec3 objectColor = vec3(0.8, 0.8, 0.8);\n"
+                                          "\n"
+                                          "    float ambientStrength = 0.4;\n"
+                                          "    vec3 ambient = ambientStrength * lightColor;\n"
+                                          "\n"
+                                          "    float diffuseStrength = 0.8;\n"
+                                          "    vec3 norm = normalize(Normal);\n"
+                                          "    vec3 lightDir = normalize(viewPos - FragPos);\n"
+                                          "    // float diffuseIntensity = max(dot(norm, lightDir), 0.0);\n"
+                                          "    float diffuseIntensity = abs(dot(norm, lightDir));\n"
+                                          "    vec3 diffuse = diffuseIntensity * diffuseStrength * lightColor;\n"
+                                          "\n"
+                                          "    float specularStrength = 0.2;\n"
+                                          "    vec3 viewDir = normalize(viewPos - FragPos);\n"
+                                          "    vec3 reflectDir = reflect(-lightDir, norm);\n"
+                                          "    float specularIntensity = pow(max(dot(viewDir, reflectDir), 0.0), 32);\n"
+                                          "    vec3 specular = specularIntensity * specularStrength * lightColor;\n"
+                                          "\n"
+                                          "    vec3 result = objectColor * (ambient + diffuse + specular);\n"
+                                          "    FragColor = vec4(result, 1.0);\n"
+                                          "}";
+
+    compileShaderProgram(vertex_shader_source, fragment_shader_source);
+}
+
 
 meshview::ShaderProgram::ShaderProgram(const char * vertexShader, const char* fragmentShader, const char* geometryShader){
     std::string vertex_source, fragment_source, geometry_source;
@@ -46,6 +106,14 @@ meshview::ShaderProgram::ShaderProgram(const char * vertexShader, const char* fr
     const char * vertex_source_cstr = vertex_source.c_str();
     const char * fragment_source_cstr = fragment_source.c_str();
     const char * geometry_source_cstr = geometryShader != nullptr ? geometry_source.c_str() : nullptr;
+
+
+    compileShaderProgram(vertex_source_cstr, fragment_source_cstr, geometry_source_cstr);
+
+}
+
+void meshview::ShaderProgram::compileShaderProgram(const char *vertex_source_cstr, const char *fragment_source_cstr,
+                                                   const char *geometry_source_cstr) {
     int success;
     char infoLog[512];
 
@@ -84,26 +152,25 @@ meshview::ShaderProgram::ShaderProgram(const char * vertexShader, const char* fr
     }
 
     // Make the program, attach shaders, link the program and check for errors
-    programID = glCreateProgram();
-    glAttachShader(programID, vertex_shader_id);
-    if (geometryShader != nullptr){
-        glAttachShader(programID, geometry_shader_id);
+    this->programID = glCreateProgram();
+    glAttachShader(this->programID, vertex_shader_id);
+    if (geometry_source_cstr != nullptr){
+        glAttachShader(this->programID, geometry_shader_id);
     }
-    glAttachShader(programID, fragment_shader_id);
-    glLinkProgram(programID);
+    glAttachShader(this->programID, fragment_shader_id);
+    glLinkProgram(this->programID);
 
-    glGetProgramiv(programID, GL_LINK_STATUS, &success);
+    glGetProgramiv(this->programID, GL_LINK_STATUS, &success);
     if (!success){
-        glGetProgramInfoLog(programID, 512, NULL, infoLog);
+        glGetProgramInfoLog(this->programID, 512, NULL, infoLog);
         std::cout << "Linking program failed: " << infoLog << std::endl;
     }
 
     glDeleteShader(vertex_shader_id);
     glDeleteShader(fragment_shader_id);
-    if (geometryShader != nullptr){
+    if (geometry_source_cstr != nullptr){
         glDeleteShader(geometry_shader_id);
     }
-
 }
 
 void meshview::ShaderProgram::use() {

@@ -35,7 +35,8 @@ meshview::Window::Window(int width, int height, bool visible) {
 }
 
 void meshview::Window::initShader() {
-    m_shader = std::make_unique<meshview::ShaderProgram>("shaders/lighting.vs", "shaders/lighting.fs");
+    m_shader = std::make_unique<meshview::ShaderProgram>();
+    // m_shader = std::make_unique<meshview::ShaderProgram>("shaders/lighting.vs", "shaders/lighting.fs");
 }
 
 void meshview::Window::initCamera() {
@@ -59,6 +60,10 @@ void meshview::Window::run(int frames = 0) {
             loop();
         }
     } else {
+        if (!m_visible){
+            std::cout << "Cannot run without gui in endless loop. Please specify a number of frames to run for." << std::endl;
+            return;
+        }
         while (!glfwWindowShouldClose(m_window)){
             loop();
         }
@@ -124,8 +129,10 @@ void meshview::Window::initWindow() {
         glViewport(0,0,width, height);
     });
 
-    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
+    if (m_visible){
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
 }
 
 void meshview::Window::initDefaultParameters() {

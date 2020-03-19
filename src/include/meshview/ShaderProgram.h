@@ -14,8 +14,14 @@
 namespace meshview {
     class ShaderProgram{
     public:
+        // Compile a default shader
+        ShaderProgram();
+
         // Compile vertex and fragment m_shader and make a m_shader program
         ShaderProgram(const char * vertexShader, const char * fragmentShader, const char * geometryShader = nullptr);
+
+        void compileShaderProgram(const char *vertex_source_cstr, const char *fragment_source_cstr,
+                                  const char *geometry_source_cstr= nullptr);
 
         // Activate the m_shader for usage in opengl
         void use();

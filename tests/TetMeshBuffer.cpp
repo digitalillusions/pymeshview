@@ -19,7 +19,7 @@ TEST_CASE("Correctly using Buffers", "[TetMeshBuffers]"){
     // Make window and buffer for testing
     meshview::Window window;
     meshview::TetMeshBuffer buffer;
-    buffer.bufferVertices(vertices, connectivity);
+    buffer.bufferCells(vertices, connectivity);
 
     // Test case passes when this point is reached
     REQUIRE(true);
