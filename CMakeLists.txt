@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.3)
 
 project(PyMeshViewer CXX C)
 
+set(CMAKE_CXX_STANDARD 14)
+
 option(MESHVIEW_TEST "Include test targets" ON)
 
-if (MINGW)
+if (MINGW AND CMAKE_BUILD_TYPE MATCHES DEBUG)
     add_compile_options(-Wa,-mbig-obj)
 endif ()
 

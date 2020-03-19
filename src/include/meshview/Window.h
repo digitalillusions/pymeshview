@@ -11,9 +11,6 @@
 #include <meshview/TetMeshBuffer.h>
 
 #include <memory>
-#include "Camera.h"
-#include "ShaderProgram.h"
-#include "TetMeshBuffer.h"
 
 namespace meshview {
     class Window {
