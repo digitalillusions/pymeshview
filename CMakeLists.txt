@@ -9,6 +9,10 @@ option(MESHVIEW_TEST "Include test targets" ON)
 if (MINGW AND CMAKE_BUILD_TYPE MATCHES DEBUG)
     add_compile_options(-Wa,-mbig-obj)
 endif ()
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+endif ()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
