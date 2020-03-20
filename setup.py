@@ -17,19 +17,11 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
     def run(self):
-        self.cmake_exe = 'cmake'
         try:
-            out = subprocess.check_output([self.cmake_exe, '--version'])
+            out = subprocess.check_output(['cmake', '--version'])
         except OSError:
-            try:
-                self.cmake_exe = "cmake3"
-                out = subprocess.check_output([self.cmake_exe, '--version'])
-            except OSError:
-                raise RuntimeError("CMake must be installed to build the following extensions: " +
-                                   ", ".join(e.name for e in self.extensions))
-
-            # raise RuntimeError("CMake must be installed to build the following extensions: " +
-            #                    ", ".join(e.name for e in self.extensions))
+            raise RuntimeError("CMake must be installed to build the following extensions: " +
+                               ", ".join(e.name for e in self.extensions))
 
         if platform.system() == "Windows":
             cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
@@ -61,8 +53,10 @@ class CMakeBuild(build_ext):
                                                               self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call([self.cmake_exe, ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call([self.cmake_exe, '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
+
+        print(f"Building on {platform.uname()}")
+        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(['cmake', '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
 
 setup(
     name='pymeshview',
