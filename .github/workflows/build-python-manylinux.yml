@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Python CI Linux
+name: Python CI Manylinux
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
 # events but only for the master branch
@@ -35,12 +35,12 @@ jobs:
     # Set up python
     - name: Python wheels manylinux build
       uses: RalfG/python-wheels-manylinux-build@v0.2.2
-        with:
-          python-versions: 'cp36-cp36m cp37-cp37m'
-          build-requirements: ''
-          system-packages: 'libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev'
-          package-path: './'
-          pip-wheel-args: ''
+      with:
+        python-versions: 'cp36-cp36m cp37-cp37m'
+        build-requirements: ''
+        system-packages: 'libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev'
+        package-path: './'
+        pip-wheel-args: ''
 
 
     # Upload artifacts
@@ -51,7 +51,7 @@ jobs:
         path: wheelhouse/*-manylinux*.whl
       if: always()
 
-    Upload wheel to pypi
+    # Upload wheel to pypi
     - name: Upload wheel to pypi
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
