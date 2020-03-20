@@ -37,6 +37,7 @@ jobs:
         python-versions: 'cp36-cp36m cp37-cp37m'
         build-requirements: ''
         # system-packages: 'libxrandr-devel libxinerama-devel libxcursor-devel libxi-devel libgl-devel'
+        system-packages: 'cmake3'
         package-path: './'
         pip-wheel-args: ''
 
