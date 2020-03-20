@@ -51,8 +51,8 @@ jobs:
       if: always()
 
     # Upload wheel to pypi
-    - name: Upload wheel to pypi
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: twine upload wheelhouse/*-manylinux*.whl
+    # - name: Upload wheel to pypi
+    #   env:
+    #     TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+    #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    #   run: twine upload wheelhouse/*-manylinux*.whl
