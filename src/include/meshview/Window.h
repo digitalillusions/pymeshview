@@ -26,6 +26,8 @@ namespace meshview {
 
         void run(int frames = 0);
 
+        void highlight(float fps=24);
+
     private:
         bool m_visible;
         int m_default_width, m_default_height;

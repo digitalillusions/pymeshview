@@ -89,6 +89,7 @@ void meshview::Window::loop() {
 
     m_camera->fpsCam(m_window);
     m_camera->alignCam(m_window, m_data->getBbox());
+    m_camera->toggleRotation(m_window);
 
     convenienceCallback();
     glfwSwapBuffers(m_window);
@@ -106,7 +107,7 @@ void meshview::Window::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    // glfwWindowHint(GLFW_SAMPLES, 4);
     if (!m_visible){
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     }
@@ -131,7 +132,7 @@ void meshview::Window::initWindow() {
     });
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
+    // glEnable(GL_MULTISAMPLE);
     if (m_visible){
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }

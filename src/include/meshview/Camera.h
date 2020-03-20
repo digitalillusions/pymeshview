@@ -30,6 +30,12 @@ namespace meshview {
         void fpsCam(GLFWwindow* window);
         void alignCam(GLFWwindow* window, std::pair<glm::vec3, glm::vec3> bbox);
         void alignCam(GLFWwindow* window, bbox_t bbox);
+        void toggleRotation(GLFWwindow * window);
+        void enableRotation();
+        void disableRotation();
+
+        void initRotation(glm::vec3 axis, float radius);
+        void rotate(GLFWwindow* window);
 
         void lookAt(glm::vec3 eye, glm::vec3 target, glm::vec3 up);
     private:
@@ -45,11 +51,16 @@ namespace meshview {
         float m_pitch, m_yaw;
 
         float m_xcursor_last, m_xcursor, m_ycursor_last, m_ycursor;
+        float m_delta_time;
         float m_last_time;
         float m_cam_sensitivity;
         float m_move_sensitivity;
-        float m_move_sprint_factor;
         int m_fps_startup_counter;
+
+        glm::vec3 m_rotate_x, m_rotate_y, m_rotate_z;
+        float m_rotate_radius, m_rotate_yaw, m_rotate_pitch;
+        bool m_rotate_toggle;
+        bool m_rotate;
     };
 }
 

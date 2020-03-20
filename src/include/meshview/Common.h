@@ -21,7 +21,7 @@ using vec3ui = std::array<unsigned int, 3>;
 using bbox_t = std::pair<vec3, vec3>;
 
 namespace meshview {
-    template<typename T, int size>
+    template<typename T, size_t size>
     std::string printArray(std::array<T, size> arr){
         std::stringstream out;
         for (int i = 0; i < size; ++i) {

@@ -37,6 +37,8 @@ void meshview::Camera::initDefaultParameters() {
     m_fps_startup_counter = 2;
     m_cam_sensitivity = 0.05f;
     m_move_sensitivity = 10.f;
+    m_last_time = 0.0f;
+    m_delta_time = 0.0f;
 
     m_unit_x = glm::vec3(1.0, 0.0, 0.0);
     m_unit_y = glm::vec3(0.0, 1.0, 0.0);
@@ -47,6 +49,16 @@ void meshview::Camera::initDefaultParameters() {
     m_camPos = glm::vec3(0.0, 0.0, 3.0);
     m_camFront = glm::vec3(0.0, 0.0, -1.0);
     m_camUp = glm::vec3(0.0, 1.0, 0.0);
+
+    m_rotate_toggle = false;
+    m_rotate = false;
+    m_rotate_x = glm::vec3(1.0, 0.0, 0.0);
+    m_rotate_y = glm::vec3(0.0, 1.0, 0.0);
+    m_rotate_z = glm::vec3(0.0, 0.0, 1.0);
+
+    m_rotate_yaw = 0.;
+    m_rotate_pitch = 0.;
+    m_rotate_radius = 1.;
 }
 
 void meshview::Camera::computeView() {
@@ -114,42 +126,45 @@ void meshview::Camera::fpsCam(GLFWwindow *window) {
     if (m_fps_startup_counter){
         m_last_time = time;
     }
-    float deltaMove = m_move_sensitivity*(time - m_last_time);
+    m_delta_time = time - m_last_time;
     m_last_time = time;
-    glm::vec3 delta(0.0);
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-        delta += m_camFront;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-        delta -= m_camFront;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-        delta += glm::normalize(glm::cross(m_camFront, m_camUp));
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-        delta -= glm::normalize(glm::cross(m_camFront, m_camUp));
-    }
-    // delta.y = 0.0; // Uncomment for true fps m_camera
-    m_camPos += delta*deltaMove;
+    if (!m_rotate){
+        float deltaMove = m_move_sensitivity*m_delta_time;
+        glm::vec3 delta(0.0);
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
+            delta += m_camFront;
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+            delta -= m_camFront;
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
+            delta += glm::normalize(glm::cross(m_camFront, m_camUp));
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
+            delta -= glm::normalize(glm::cross(m_camFront, m_camUp));
+        }
+        // delta.y = 0.0; // Uncomment for true fps m_camera
+        m_camPos += delta*deltaMove;
 
-    // Mouse movement
-    double xCursorPos, yCursorPos;
-    glfwGetCursorPos(window, &xCursorPos, &yCursorPos);
-    if (m_fps_startup_counter){
+        // Mouse movement
+        double xCursorPos, yCursorPos;
+        glfwGetCursorPos(window, &xCursorPos, &yCursorPos);
+        if (m_fps_startup_counter){
+            m_xcursor_last = (float)xCursorPos;
+            m_ycursor_last = (float)yCursorPos;
+            m_fps_startup_counter--;
+        }
+        m_xcursor = (float)xCursorPos;
+        m_ycursor = (float)yCursorPos;
+        float yawDelta =  m_cam_sensitivity*(m_xcursor - m_xcursor_last);
+        float pitchDelta = -m_cam_sensitivity*(m_ycursor - m_ycursor_last); // Negative because y axis is negative
         m_xcursor_last = (float)xCursorPos;
         m_ycursor_last = (float)yCursorPos;
-        m_fps_startup_counter--;
+        m_pitch += pitchDelta;
+        m_yaw += yawDelta;
+        constrainAngles();
+        computeCamFront();
     }
-    m_xcursor = (float)xCursorPos;
-    m_ycursor = (float)yCursorPos;
-    float yawDelta =  m_cam_sensitivity*(m_xcursor - m_xcursor_last);
-    float pitchDelta = -m_cam_sensitivity*(m_ycursor - m_ycursor_last); // Negative because y axis is negative
-    m_xcursor_last = (float)xCursorPos;
-    m_ycursor_last = (float)yCursorPos;
-    m_pitch += pitchDelta;
-    m_yaw += yawDelta;
-    constrainAngles();
-    computeCamFront();
 }
 
 void meshview::Camera::constrainAngles() {
@@ -237,4 +252,60 @@ void meshview::Camera::computeCoordinateSystem() {
     // glm::vec3 yaxis = glm::normalize(glm::cross(zaxis, xaxis));
 
 }
+
+void meshview::Camera::toggleRotation(GLFWwindow * window) {
+    bool toggle_rotation_now = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
+    if (toggle_rotation_now && !m_rotate_toggle){
+        m_rotate = !m_rotate;
+        if (m_rotate){
+            initRotation(glm::vec3(0.0, 0.0, 1.0), 4.0);
+        }
+    }
+    m_rotate_toggle = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
+    
+    if (m_rotate){
+        rotate(window);
+    }
+}
+
+void meshview::Camera::enableRotation() {
+    m_rotate = true;
+}
+
+void meshview::Camera::disableRotation() {
+    m_rotate = false;
+}
+
+void meshview::Camera::initRotation(glm::vec3 axis, float radius) {
+    m_rotate_y = glm::normalize(axis);
+    m_rotate_x = glm::normalize(glm::cross(m_rotate_y, glm::vec3(1.0, 1.0, 1.0)));
+    m_rotate_z = glm::normalize(glm::cross(m_rotate_x, m_rotate_y));
+
+    m_rotate_radius = radius;
+    m_rotate_yaw = 0.0;
+    m_rotate_pitch = 0.0;
+
+    // Automatically enable rotation when rotation is initialized
+    enableRotation();
+}
+
+void meshview::Camera::rotate(GLFWwindow * window) {
+    glm::vec3 angles(1.);
+    angles[0] = m_rotate_radius * cosf(glm::radians(m_rotate_yaw)) * cosf(glm::radians(m_rotate_pitch));
+    angles[1] = m_rotate_radius * sinf(glm::radians(m_rotate_pitch));
+    angles[2] = m_rotate_radius * sinf(glm::radians(m_rotate_yaw)) * cosf(glm::radians(m_rotate_pitch));
+
+    glm::vec3 new_pos = angles[0] * m_rotate_x + angles[1] * m_rotate_y + angles[2] * m_rotate_z;
+
+    // std::cout << "New Pos:" << meshview::printArray(meshview::arrayFromVec3<float>(new_pos)) << std::endl;
+    lookAt(new_pos, glm::vec3(0.), m_rotate_y);
+
+    m_rotate_yaw += m_delta_time * 80.f;
+    m_rotate_pitch += m_delta_time * 5.f;
+    if (m_rotate_pitch > 89.){
+        m_rotate = false;
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+}
+
 
