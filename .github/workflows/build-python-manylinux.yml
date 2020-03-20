@@ -16,10 +16,6 @@ jobs:
   build-linux:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7]
-        # python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -37,30 +33,27 @@ jobs:
       run: sudo apt-get install -y libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
     
     # Set up python
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
+    - name: Python wheels manylinux build
+      uses: RalfG/python-wheels-manylinux-build@v0.2.2
+        with:
+          python-versions: 'cp36-cp36m cp37-cp37m'
+          build-requirements: ''
+          system-packages: 'libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev'
+          package-path: './'
+          pip-wheel-args: ''
 
-    # Install dependencies
-    - name: Install dependencies
-      run: python -m pip install --upgrade pip setuptools wheel twine
-
-    # Change directory and run setup py
-    - name: Run setup py
-      run: python setup.py bdist_wheel
 
     # Upload artifacts
     - name: Upload compiled wheel as artifact
       uses: actions/upload-artifact@master
       with:
-        name: pymeshview-ubuntu-${{ matrix.python-version }}
-        path: build/dist
+        name: pymeshview-manylinux
+        path: wheelhouse/*-manylinux*.whl
       if: always()
 
-    # Upload wheel to pypi
-    # - name: Upload wheel to pypi
-    #   env:
-    #     TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-    #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-    #   run: twine upload build/dist/*
+    Upload wheel to pypi
+    - name: Upload wheel to pypi
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: twine upload wheelhouse/*-manylinux*.whl
