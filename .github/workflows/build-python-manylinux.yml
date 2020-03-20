@@ -39,7 +39,7 @@ jobs:
         # system-packages: 'libxrandr-devel libxinerama-devel libxcursor-devel libxi-devel libgl-devel'
         system-packages: 'cmake3'
         package-path: './'
-        pip-wheel-args: ''
+        pip-wheel-args: '--manylinux-build'
 
 
     # Upload artifacts

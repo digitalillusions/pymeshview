@@ -3,10 +3,17 @@ import re
 import sys
 import platform
 import subprocess
+import argparse
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
+
+# Parse custom arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("--manylinux-build", action='store_true', dest='is_manylinux')
+args, unknown_args = parser.parse_known_args(sys.argv)
+sys.argv = unknown_args
 
 
 class CMakeExtension(Extension):
@@ -54,9 +61,12 @@ class CMakeBuild(build_ext):
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
 
-        print(f"Building on {platform.uname()}")
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
+        if not args.is_manylinux:
+            subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+            subprocess.check_call(['cmake', '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
+        else:
+            subprocess.check_call(['cmake3', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+            subprocess.check_call(['cmake3', '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
 
 setup(
     name='pymeshview',
