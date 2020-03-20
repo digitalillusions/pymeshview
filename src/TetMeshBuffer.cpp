@@ -3,6 +3,7 @@
 //
 
 #include <meshview/TetMeshBuffer.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 meshview::TetMeshBuffer::TetMeshBuffer() {
     // Init default parameters
@@ -50,6 +51,9 @@ void meshview::TetMeshBuffer::bufferCells(const std::vector<vec3> &vertices,
     // Compute the bounding box
     m_bbox = computeBoundingBox(vertices);
 
+    // Scale to unit box and set view matrix
+    scaleToUnitBox();
+
     // Bind the buffers
     bindBuffers();
 }
@@ -60,6 +64,9 @@ void meshview::TetMeshBuffer::bufferVerticesNormals(const std::vector<vec6> &ver
 
     // Assign bounding box
     m_bbox = bound_box;
+
+    // Scale to unit box and set view matrix
+    scaleToUnitBox();
 
     // Bind the buffers
     bindBuffers();
@@ -81,6 +88,18 @@ void meshview::TetMeshBuffer::bindBuffers() {
 
     // Disable vertex array
     glBindVertexArray(0);
+}
+
+void meshview::TetMeshBuffer::scaleToUnitBox() {
+    // Compute the view matrix depending on the bounding box, so that the object always lies within the unit cube
+    float scale = 2/max(m_bbox.second - m_bbox.first);  // So that resulting bbox will be from -1 to 1 in longest direction
+    auto translate = -vec3FromArray((m_bbox.first + m_bbox.second)/2.);
+    m_model = glm::scale(m_model, glm::vec3(scale));
+    m_model = glm::translate(m_model, translate);
+    m_model_inv = glm::inverse(m_model);
+
+    // Set bounding box to unit
+    m_bbox = std::make_pair(vec3{-1, -1, -1}, vec3{1, 1, 1});
 }
 
 void meshview::TetMeshBuffer::glDraw() {

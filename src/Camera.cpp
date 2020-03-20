@@ -36,7 +36,7 @@ meshview::Camera::Camera(const glm::vec3 camPos, const float pitch, const float 
 void meshview::Camera::initDefaultParameters() {
     m_fps_startup_counter = 2;
     m_cam_sensitivity = 0.05f;
-    m_move_sensitivity = 100.f;
+    m_move_sensitivity = 10.f;
 
     m_unit_x = glm::vec3(1.0, 0.0, 0.0);
     m_unit_y = glm::vec3(0.0, 1.0, 0.0);

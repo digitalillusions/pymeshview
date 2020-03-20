@@ -90,6 +90,15 @@ inline std::array<T, size> operator-(std::array<T, size> x, std::array<T, size> 
 }
 
 template<typename T, size_t size>
+inline std::array<T, size> operator-(std::array<T, size> x){
+    std::array<T, size> result;
+    for (int i = 0; i < size; ++i) {
+        result[i] = -x[i];
+    }
+    return result;
+}
+
+template<typename T, size_t size>
 inline std::array<T, size> operator+(std::array<T, size> x, std::array<T, size> y){
     std::array<T, size> result;
     for (int i = 0; i < size; ++i) {
@@ -98,5 +107,42 @@ inline std::array<T, size> operator+(std::array<T, size> x, std::array<T, size> 
     return result;
 }
 
+template<typename T, size_t size>
+inline std::array<T, size> operator/(std::array<T, size> x, std::array<T, size> y){
+    std::array<T, size> result;
+    for (int i = 0; i < size; ++i) {
+        result[i] = x[i] / y[i];
+    }
+    return result;
+}
+
+template<typename T, size_t size, typename F>
+inline std::array<T, size> operator/(std::array<T, size> x, F y){
+    std::array<T, size> result;
+    for (int i = 0; i < size; ++i) {
+        result[i] = x[i] / y;
+    }
+    return result;
+}
+
+template<typename T, size_t size>
+inline T max(std::array<T, size> x){
+    T result = x[0];
+    for (int i = 0; i < size; ++i) {
+        if(x[i] > result)
+            result = x[i];
+    }
+    return result;
+}
+
+template<typename T, size_t size>
+inline T min(std::array<T, size> x){
+    T result = x[0];
+    for (int i = 0; i < size; ++i) {
+        if(x[i] < result)
+            result = x[i];
+    }
+    return result;
+}
 
 #endif //LEARNOGL_COMMON_H

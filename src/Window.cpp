@@ -77,8 +77,8 @@ void meshview::Window::loop() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_shader->use();
-    m_shader->setMat4fv("model", glm::value_ptr(m_model));
-    m_shader->setMat4fv("modelInv", glm::value_ptr(m_model_inv));
+    m_shader->setMat4fv("model", glm::value_ptr(m_data->getModel()));
+    m_shader->setMat4fv("modelInv", glm::value_ptr(m_data->getModelInv()));
     m_shader->setMat4fv("view", glm::value_ptr(m_camera->getView()));
     m_shader->setMat4fv("projection", glm::value_ptr(m_camera->getProjection()));
 

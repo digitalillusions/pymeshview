@@ -25,6 +25,7 @@ namespace meshview {
         bbox_t getBbox();
 
     private:
+        void scaleToUnitBox();
         void bufferDefaultVertices();
         void bindBuffers();
         unsigned int m_vbo, m_vao, m_ebo;
