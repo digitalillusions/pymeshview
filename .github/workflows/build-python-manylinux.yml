@@ -30,6 +30,9 @@ jobs:
         git submodule sync --recursive
         git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
 
+    - name: Run Ls and Pwd
+      run: pwd && ls -al
+
     # Set up python
     - name: Python wheels manylinux build
       uses: RalfG/python-wheels-manylinux-build@v0.2.2
@@ -38,7 +41,7 @@ jobs:
         build-requirements: ''
         # system-packages: 'libxrandr-devel libxinerama-devel libxcursor-devel libxi-devel libgl-devel'
         system-packages: 'cmake3'
-        package-path: './'
+        package-path: 'pymeshview'
         pip-wheel-args: '--manylinux-build'
 
 
