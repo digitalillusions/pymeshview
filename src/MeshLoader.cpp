@@ -9,7 +9,25 @@
 #include <meshview/MeshLoader.h>
 #include <iostream>
 
+namespace py = pybind11;
+
+meshview::MeshLoader::MeshLoader() {
+    auto filename = openFile();
+    m_cell_type = meshview::CellType::TETRAHEDRAL;
+    loadMesh(filename);
+    computeBoundingBox();
+
+}
+
 meshview::MeshLoader::MeshLoader(const std::string filename, meshview::CellType cell_type) : m_cell_type(cell_type){
+
+    loadMesh(filename);
+
+    computeBoundingBox();
+
+}
+
+void meshview::MeshLoader::loadMesh(std::string filename) {
     py::scoped_interpreter m_guard{};
     std::cout << "Attempting to load module." << std::endl;
     auto meshio = py::module::import("meshio");
@@ -19,7 +37,7 @@ meshview::MeshLoader::MeshLoader(const std::string filename, meshview::CellType 
     auto x = data.attr("points").cast<std::vector<std::array<float, 3>>>();
     m_vertices = data.attr("points").cast<std::vector<std::array<float, 3>>>();
     computeCombinations();
-    if (cell_type == meshview::CellType::TETRAHEDRAL){
+    if (m_cell_type == meshview::CellType::TETRAHEDRAL){
         auto cells = data.attr("cells").attr("__getitem__")(0).attr("data").cast<std::vector<std::array<unsigned int, 4>>>();
         m_cells.clear();
         for(const auto & elem : cells){
@@ -39,17 +57,6 @@ meshview::MeshLoader::MeshLoader(const std::string filename, meshview::CellType 
         }
     }
     py::print("Mesh Loaded Successfully");
-    computeBoundingBox();
-
-    float* vertex_ptr = &m_vertices[0][0];
-    // Verify data pointer correctness
-    int last_vec = m_vertices.size()-1;
-    std::cout << "First Vector: " << vertex_ptr[0] << " " << vertex_ptr[1] << " " << vertex_ptr[2] << std::endl;
-    std::cout << "First Vector check: " << m_vertices[0][0] << " " << m_vertices[0][1] << " " << m_vertices[0][2] << std::endl;
-    std::cout << "Second Vector: " << vertex_ptr[3] << " " << vertex_ptr[4] << " " << vertex_ptr[5] << std::endl;
-    std::cout << "Second Vector check: " << m_vertices[1][0] << " " << m_vertices[1][1] << " " << m_vertices[1][2] << std::endl;
-    std::cout << "Last Vector: " << vertex_ptr[3*last_vec] << " " << vertex_ptr[3*last_vec + 1] << " " << vertex_ptr[3*last_vec + 2] << std::endl;
-    std::cout << "Last Vector check: " << m_vertices[last_vec][0] << " " << m_vertices[last_vec][1] << " " << m_vertices[last_vec][2] << std::endl;
 }
 
 void meshview::MeshLoader::testPointers() {
@@ -61,6 +68,16 @@ void meshview::MeshLoader::testPointers() {
     for (int i = 0; i < 4; ++i) {
         std::cout << m_verts_and_normals[i][0] << " " <<  m_verts_and_normals[i][1] << " " << m_verts_and_normals[i][2] << std::endl;
     }
+
+    float* vertex_ptr = &m_vertices[0][0];
+    // Verify data pointer correctness
+    int last_vec = m_vertices.size()-1;
+    std::cout << "First Vector: " << vertex_ptr[0] << " " << vertex_ptr[1] << " " << vertex_ptr[2] << std::endl;
+    std::cout << "First Vector check: " << m_vertices[0][0] << " " << m_vertices[0][1] << " " << m_vertices[0][2] << std::endl;
+    std::cout << "Second Vector: " << vertex_ptr[3] << " " << vertex_ptr[4] << " " << vertex_ptr[5] << std::endl;
+    std::cout << "Second Vector check: " << m_vertices[1][0] << " " << m_vertices[1][1] << " " << m_vertices[1][2] << std::endl;
+    std::cout << "Last Vector: " << vertex_ptr[3*last_vec] << " " << vertex_ptr[3*last_vec + 1] << " " << vertex_ptr[3*last_vec + 2] << std::endl;
+    std::cout << "Last Vector check: " << m_vertices[last_vec][0] << " " << m_vertices[last_vec][1] << " " << m_vertices[last_vec][2] << std::endl;
 }
 
 float *meshview::MeshLoader::getVertices() {
@@ -95,7 +112,7 @@ void meshview::MeshLoader::computeCombinations() {
 }
 
 std::pair<glm::vec3, glm::vec3> meshview::MeshLoader::getBoundingBox() {
-    return std::pair<glm::vec3, glm::vec3>(m_bbox_min, m_bbox_max);
+    return {m_bbox_min, m_bbox_max};
 }
 
 void meshview::MeshLoader::computeBoundingBox() {
@@ -113,3 +130,16 @@ void meshview::MeshLoader::computeBoundingBox() {
     }
 }
 
+bbox_t meshview::MeshLoader::getBoundingBoxArray() {
+    return {arrayFromVec3<float>(m_bbox_min), arrayFromVec3<float>(m_bbox_max)};
+}
+
+std::string meshview::MeshLoader::openFile() {
+    py::scoped_interpreter m_guard{};
+    std::cout << "Importing Tkinter" << std::endl;
+    auto tkinter = py::module::import("tkinter");
+    auto filedialog = py::module::import("tkinter").attr("filedialog").attr("askopenfiledialog");
+    tkinter.attr("Tk")().attr("withdraw")();
+    auto filename = filedialog();
+    return filename.cast<std::string>();
+}

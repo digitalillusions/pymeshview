@@ -24,7 +24,7 @@ namespace meshview {
 
         void setData(std::shared_ptr<TetMeshBuffer> data);
 
-        void run(int frames);
+        void run(int frames = 0);
 
     private:
         bool m_visible;
@@ -44,6 +44,8 @@ namespace meshview {
         void initCamera();
         void initData();
         void initWindow();
+
+        void saveFrame();
 
         void loop();
 

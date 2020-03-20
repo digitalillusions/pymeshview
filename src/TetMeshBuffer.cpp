@@ -50,6 +50,22 @@ void meshview::TetMeshBuffer::bufferCells(const std::vector<vec3> &vertices,
     // Compute the bounding box
     m_bbox = computeBoundingBox(vertices);
 
+    // Bind the buffers
+    bindBuffers();
+}
+
+void meshview::TetMeshBuffer::bufferVerticesNormals(const std::vector<vec6> &vertices_normals, bbox_t bound_box) {
+    // Assign vertices and normals
+    m_vertices_normals = vertices_normals;
+
+    // Assign bounding box
+    m_bbox = bound_box;
+
+    // Bind the buffers
+    bindBuffers();
+}
+
+void meshview::TetMeshBuffer::bindBuffers() {
     // Bind the vertex array and copy the data
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);

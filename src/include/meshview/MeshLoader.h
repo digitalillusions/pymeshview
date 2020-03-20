@@ -8,9 +8,7 @@
 #include <meshview/Common.h>
 #include <vector>
 #include <array>
-#include <pybind11/pybind11.h>
 #include <glm/glm.hpp>
-namespace py = pybind11;
 
 namespace meshview {
     enum CellType{
@@ -19,7 +17,8 @@ namespace meshview {
 
     class MeshLoader {
     public:
-        MeshLoader(const std::string filename, CellType cell_type);
+        MeshLoader();
+        MeshLoader(const std::string filename, CellType cell_type=CellType::TETRAHEDRAL);
         void testPointers();
         float* getVertices();
         unsigned int getNVertices();
@@ -28,8 +27,11 @@ namespace meshview {
         float* getVertsAndNormals();
         unsigned int getNVertsAndNormals();
         std::pair<glm::vec3, glm::vec3> getBoundingBox();
+        bbox_t getBoundingBoxArray();
 
     private:
+        std::string openFile();
+        void loadMesh(std::string filename);
         void computeCombinations();
         void computeBoundingBox();
         std::vector<vec3> m_vertices;

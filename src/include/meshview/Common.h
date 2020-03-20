@@ -58,6 +58,11 @@ namespace meshview {
     }
 
     template<typename T>
+    inline std::array<T, 3> arrayFromVec3(glm::vec3 array){
+        return std::array<T, 3>{array[0], array[1], array[2]};
+    }
+
+    template<typename T>
     bbox_t computeBoundingBox(std::vector<std::array<T,3>> vertices){
         bbox_t result;
         result.first = vertices[0];

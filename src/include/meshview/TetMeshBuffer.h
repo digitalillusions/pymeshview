@@ -17,6 +17,7 @@ namespace meshview {
         ~TetMeshBuffer();
 
         void bufferCells(const std::vector<vec3> &vertices, const std::vector<std::array<int, 4>> &connectivity);
+        void bufferVerticesNormals(const std::vector<vec6>& vertices_normals, bbox_t bound_box);
         void glDraw();
 
         glm::mat4 getModel();
@@ -25,6 +26,7 @@ namespace meshview {
 
     private:
         void bufferDefaultVertices();
+        void bindBuffers();
         unsigned int m_vbo, m_vao, m_ebo;
         unsigned int m_nvertices;
 

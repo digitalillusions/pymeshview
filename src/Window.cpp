@@ -54,7 +54,7 @@ meshview::Window::~Window() {
     glfwTerminate();
 }
 
-void meshview::Window::run(int frames = 0) {
+void meshview::Window::run(int frames) {
     if (frames){
         for (int i = 0; i < frames; ++i) {
             loop();
@@ -106,6 +106,7 @@ void meshview::Window::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
     if (!m_visible){
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     }
@@ -130,6 +131,7 @@ void meshview::Window::initWindow() {
     });
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
     if (m_visible){
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
@@ -163,4 +165,8 @@ void meshview::Window::convenienceCallback() {
 
 void meshview::Window::setData(std::shared_ptr<meshview::TetMeshBuffer> data) {
     m_data = data;
+}
+
+void meshview::Window::saveFrame() {
+
 }
