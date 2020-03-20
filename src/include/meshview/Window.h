@@ -38,6 +38,9 @@ namespace meshview {
 
         glm::mat4 m_model, m_model_inv;
 
+        int m_frame_counter;
+        float m_time_since_last_frame;
+
         void (*m_preframe_callback)(GLFWwindow*);
         void (*m_postframe_callback)(GLFWwindow*);
 

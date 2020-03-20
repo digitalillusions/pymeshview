@@ -148,6 +148,9 @@ void meshview::Window::initDefaultParameters() {
 
     m_model = glm::mat4(1);
     m_model_inv = glm::mat4(1);
+
+    m_frame_counter = 0;
+    m_time_since_last_frame = 0;
 }
 
 void meshview::Window::setPreFrameCallback(void (*callback)(GLFWwindow *)) {
@@ -169,5 +172,6 @@ void meshview::Window::setData(std::shared_ptr<meshview::TetMeshBuffer> data) {
 }
 
 void meshview::Window::saveFrame() {
-
+    // glReadPixels(0,0,m_default_width, m_default_height, GL_RGB)
+    m_frame_counter++;
 }
