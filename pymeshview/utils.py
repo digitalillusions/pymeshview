@@ -48,6 +48,8 @@ def show_mesh(*normalargs, **kwargs):
         window.highlight(prefixPath="tmp")
 
     if args.output is not None:
-        ffmpeg.input("tmp/output-frame-%01d.png").filter('fps', fps=30).output(args.output).run(overwrite_output=True)
+        ffmpeg.input("tmp/output-frame-%01d.png")\
+            .filter('fps', fps=30)\
+            .output(args.output, pix_fmt='yuv420p').run(overwrite_output=True)
 
     cleanup_temp_dir("tmp")
