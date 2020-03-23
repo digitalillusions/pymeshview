@@ -5,7 +5,7 @@ import platform
 import subprocess
 import argparse
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
@@ -63,10 +63,10 @@ class CMakeBuild(build_ext):
 
         if not args.is_manylinux:
             subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-            subprocess.check_call(['cmake', '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
+            subprocess.check_call(['cmake', '--build', '.', '--target', '_pymeshview'] + build_args, cwd=self.build_temp)
         else:
             subprocess.check_call(['cmake3', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-            subprocess.check_call(['cmake3', '--build', '.', '--target', 'pymeshview'] + build_args, cwd=self.build_temp)
+            subprocess.check_call(['cmake3', '--build', '.', '--target', '_pymeshview'] + build_args, cwd=self.build_temp)
 
 setup(
     name='pymeshview',
@@ -75,7 +75,9 @@ setup(
     author_email='jeske@cs.rwth-aachen.de',
     description='Minimalist mesh viewer for python powered by opengl',
     long_description='',
-    ext_modules=[CMakeExtension('pymeshview')],
+    packages=find_packages(),
+    entry_points={'console_scripts': 'pymesh = pymeshview.examples.show_mesh:main'},
+    ext_modules=[CMakeExtension('_pymeshview')],
     install_requires=["meshio", "ffmpeg-python"],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
