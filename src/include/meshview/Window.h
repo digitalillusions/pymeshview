@@ -26,7 +26,7 @@ namespace meshview {
 
         void run(int frames = 0);
 
-        void highlight(float fps=24);
+        void highlight(vec3 axis, float radius, int fps=24);
 
     private:
         bool m_visible;
@@ -39,7 +39,9 @@ namespace meshview {
         glm::mat4 m_model, m_model_inv;
 
         int m_frame_counter;
-        float m_time_since_last_frame;
+        float m_last_time;
+        float m_time_since_last_drawn_frame;
+        int m_fps;
 
         void (*m_preframe_callback)(GLFWwindow*);
         void (*m_postframe_callback)(GLFWwindow*);

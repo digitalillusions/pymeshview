@@ -24,7 +24,7 @@ TEST_CASE("Creation and deletion of window object with size parameters", "[windo
 
 TEST_CASE("Creation of an invisible window with size params", "[window]"){
     meshview::Window window(800, 600, false);
-    window.run(1);
+    window.run(10);
 
     // Test case passes when this point is reached
     REQUIRE(true);

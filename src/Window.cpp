@@ -4,6 +4,7 @@
 
 #include <meshview/Window.h>
 #include <iostream>
+#include <stb/stb_image_write.h>
 
 meshview::Window::Window() {
     // Init default parameters
@@ -55,6 +56,7 @@ meshview::Window::~Window() {
 }
 
 void meshview::Window::run(int frames) {
+    // Init last time before rendering starts
     if (frames){
         for (int i = 0; i < frames; ++i) {
             loop();
@@ -70,7 +72,18 @@ void meshview::Window::run(int frames) {
     }
 }
 
+void meshview::Window::highlight(vec3 axis, float radius, int fps){
+    m_fps = fps;
+    m_camera->initRotation(vec3FromArray(axis), radius);
+    while (!glfwWindowShouldClose(m_window)){
+        loop();
+    }
+
+}
+
 void meshview::Window::loop() {
+    // Get time before rendering starts
+    m_last_time = (float)glfwGetTime();
     m_preframe_callback(m_window);
 
     glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -150,7 +163,9 @@ void meshview::Window::initDefaultParameters() {
     m_model_inv = glm::mat4(1);
 
     m_frame_counter = 0;
-    m_time_since_last_frame = 0;
+    m_time_since_last_drawn_frame = 0;
+    m_last_time = 0;
+    m_fps = 24;
 }
 
 void meshview::Window::setPreFrameCallback(void (*callback)(GLFWwindow *)) {
@@ -172,6 +187,15 @@ void meshview::Window::setData(std::shared_ptr<meshview::TetMeshBuffer> data) {
 }
 
 void meshview::Window::saveFrame() {
-    // glReadPixels(0,0,m_default_width, m_default_height, GL_RGB)
+    int width, height;
+    glfwGetFramebufferSize(m_window, &width, &height);
+    unsigned char data[width*height*4];
+    glReadBuffer(GL_FRONT);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    std::stringstream out;
+    out << "output-frame-" << m_frame_counter << ".png";
+    stbi_flip_vertically_on_write(true);
+    stbi_write_png(out.str().c_str(), m_default_width, m_default_height, 4, (void*) data, m_default_width*4);
     m_frame_counter++;
 }
+

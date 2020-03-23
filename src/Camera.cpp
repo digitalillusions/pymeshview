@@ -123,8 +123,13 @@ void meshview::Camera::lookAt(const glm::vec3 eye, const glm::vec3 target, const
 void meshview::Camera::fpsCam(GLFWwindow *window) {
     // Body movement
     auto time = (float)glfwGetTime();
+    double xCursorPos, yCursorPos;
+    glfwGetCursorPos(window, &xCursorPos, &yCursorPos);
     if (m_fps_startup_counter){
         m_last_time = time;
+        m_xcursor_last = (float)xCursorPos;
+        m_ycursor_last = (float)yCursorPos;
+        m_fps_startup_counter--;
     }
     m_delta_time = time - m_last_time;
     m_last_time = time;
@@ -147,13 +152,6 @@ void meshview::Camera::fpsCam(GLFWwindow *window) {
         m_camPos += delta*deltaMove;
 
         // Mouse movement
-        double xCursorPos, yCursorPos;
-        glfwGetCursorPos(window, &xCursorPos, &yCursorPos);
-        if (m_fps_startup_counter){
-            m_xcursor_last = (float)xCursorPos;
-            m_ycursor_last = (float)yCursorPos;
-            m_fps_startup_counter--;
-        }
         m_xcursor = (float)xCursorPos;
         m_ycursor = (float)yCursorPos;
         float yawDelta =  m_cam_sensitivity*(m_xcursor - m_xcursor_last);

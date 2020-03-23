@@ -6,6 +6,8 @@ int main(){
 
     // meshview::MeshLoader mesh;
 
-    window.run();
+    // window.run();
+    vec3 axis = {0.0, 0.0, 1.0};
+    window.highlight(axis, 4);
     return 0;
 }
