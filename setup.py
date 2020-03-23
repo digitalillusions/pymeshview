@@ -76,7 +76,7 @@ setup(
     description='Minimalist mesh viewer for python powered by opengl',
     long_description='',
     ext_modules=[CMakeExtension('pymeshview')],
-    install_requires=["meshio"],
+    install_requires=["meshio", "ffmpeg-python"],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )

@@ -8,6 +8,6 @@ int main(){
 
     // window.run();
     vec3 axis = {0.0, 0.0, 1.0};
-    window.highlight(axis, 4);
+    window.highlight(axis, 4, "output");
     return 0;
 }

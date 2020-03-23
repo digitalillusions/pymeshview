@@ -26,7 +26,7 @@ namespace meshview {
 
         void run(int frames = 0);
 
-        void highlight(vec3 axis, float radius, int fps=24);
+        void highlight(vec3 axis, float radius, std::string prefix_path=".");
 
     private:
         bool m_visible;
@@ -40,8 +40,10 @@ namespace meshview {
 
         int m_frame_counter;
         float m_last_time;
-        float m_time_since_last_drawn_frame;
+        float m_time_last_frame;
         int m_fps;
+
+        unsigned char* m_data_image;
 
         void (*m_preframe_callback)(GLFWwindow*);
         void (*m_postframe_callback)(GLFWwindow*);
@@ -51,8 +53,11 @@ namespace meshview {
         void initCamera();
         void initData();
         void initWindow();
+        void initTimes();
 
-        void saveFrame();
+        bool drawFrameNow();
+
+        void saveFrame(std::string prefix_path=".");
 
         void loop();
 

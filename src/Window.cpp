@@ -24,6 +24,8 @@ meshview::Window::Window(int width, int height, bool visible) {
     initDefaultParameters();
     m_default_width = width;
     m_default_height = height;
+    delete m_data_image;
+    m_data_image = new unsigned char[m_default_width*m_default_height*4];
     m_visible = visible;
 
     // Initialize the window
@@ -51,12 +53,14 @@ void meshview::Window::initData(){
 }
 
 meshview::Window::~Window() {
+    delete m_data_image;
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
 
 void meshview::Window::run(int frames) {
     // Init last time before rendering starts
+    initTimes();
     if (frames){
         for (int i = 0; i < frames; ++i) {
             loop();
@@ -72,18 +76,18 @@ void meshview::Window::run(int frames) {
     }
 }
 
-void meshview::Window::highlight(vec3 axis, float radius, int fps){
-    m_fps = fps;
+void meshview::Window::highlight(vec3 axis, float radius, std::string prefix_path){
     m_camera->initRotation(vec3FromArray(axis), radius);
+    initTimes();
     while (!glfwWindowShouldClose(m_window)){
         loop();
+        saveFrame(prefix_path);
     }
 
 }
 
 void meshview::Window::loop() {
     // Get time before rendering starts
-    m_last_time = (float)glfwGetTime();
     m_preframe_callback(m_window);
 
     glClearColor(0.1, 0.1, 0.1, 1.0);
@@ -120,7 +124,7 @@ void meshview::Window::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    // glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_SAMPLES, 4);
     if (!m_visible){
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     }
@@ -145,7 +149,7 @@ void meshview::Window::initWindow() {
     });
 
     glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_MULTISAMPLE);
+    glEnable(GL_MULTISAMPLE);
     if (m_visible){
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
@@ -155,6 +159,7 @@ void meshview::Window::initDefaultParameters() {
     m_visible = true;
     m_default_width = 800;
     m_default_height = 600;
+    m_data_image = new unsigned char[m_default_width*m_default_height*4];
 
     m_preframe_callback = [](GLFWwindow*){};
     m_postframe_callback = [](GLFWwindow*){};
@@ -163,9 +168,9 @@ void meshview::Window::initDefaultParameters() {
     m_model_inv = glm::mat4(1);
 
     m_frame_counter = 0;
-    m_time_since_last_drawn_frame = 0;
     m_last_time = 0;
-    m_fps = 24;
+    m_time_last_frame = 0;
+    m_fps = 30;
 }
 
 void meshview::Window::setPreFrameCallback(void (*callback)(GLFWwindow *)) {
@@ -186,16 +191,36 @@ void meshview::Window::setData(std::shared_ptr<meshview::TetMeshBuffer> data) {
     m_data = data;
 }
 
-void meshview::Window::saveFrame() {
+void meshview::Window::saveFrame(std::string prefix_path) {
+    if (!drawFrameNow()){
+        return;
+    }
     int width, height;
-    glfwGetFramebufferSize(m_window, &width, &height);
-    unsigned char data[width*height*4];
     glReadBuffer(GL_FRONT);
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glReadPixels(0, 0, m_default_width, m_default_height, GL_RGBA, GL_UNSIGNED_BYTE, m_data_image);
     std::stringstream out;
-    out << "output-frame-" << m_frame_counter << ".png";
+    out << prefix_path << "/" << "output-frame-" << m_frame_counter << ".png";
     stbi_flip_vertically_on_write(true);
-    stbi_write_png(out.str().c_str(), m_default_width, m_default_height, 4, (void*) data, m_default_width*4);
+    int success = stbi_write_png(out.str().c_str(), m_default_width, m_default_height, 4, (void*) m_data_image, m_default_width*4);
+    if (!success){
+        std::cout << "Error while opening file and writing png. Exiting..." << std::endl;
+        glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+    }
     m_frame_counter++;
+}
+
+bool meshview::Window::drawFrameNow() {
+    float frame_time = (float)glfwGetTime() - m_time_last_frame;
+    if (frame_time < 1./m_fps) {
+        return false;
+    } else {
+        m_time_last_frame = (float)glfwGetTime();
+        return true;
+    }
+}
+
+void meshview::Window::initTimes() {
+    m_last_time = (float)glfwGetTime();
+    m_time_last_frame = (float)glfwGetTime();
 }
 
