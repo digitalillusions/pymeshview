@@ -31,7 +31,7 @@ jobs:
         build-requirements: ''
         system-packages: ''
         package-path: ''
-        pip-wheel-args: '--no-deps --manylinux-build'
+        pip-wheel-args: '--manylinux-build'
     # - name: Publish wheels to PyPI
     #   env:
     #     TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
