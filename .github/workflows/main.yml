@@ -29,7 +29,7 @@ jobs:
       with:
         python-versions: 'cp36-cp36m cp37-cp37m'
         build-requirements: ''
-        system-packages: 'cmake3 libXrandr-devel libXinerama-devel libXcursor-devel'
+        system-packages: 'cmake3 libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel'
         package-path: ''
         pip-wheel-args: '--manylinux-build'
     # - name: Publish wheels to PyPI
