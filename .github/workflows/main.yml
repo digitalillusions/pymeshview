@@ -4,7 +4,9 @@ name: Python CI Manylinux
 # events but only for the master branch
 on:
   push:
-    branches: [ ci-test ]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ] 
 
 jobs:
   build-manylinux:
@@ -32,9 +34,10 @@ jobs:
         system-packages: 'cmake3 libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel'
         package-path: ''
         pip-wheel-args: '--manylinux-build'
-    # - name: Publish wheels to PyPI
-    #   env:
-    #     TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-    #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-    #   run: |
-    #     twine upload wheelhouse/*-manylinux*.whl
+    
+    - name: Publish wheels to PyPI
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        twine upload wheelhouse/*-manylinux*.whl --skip-existing
