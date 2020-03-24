@@ -70,7 +70,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='pymeshview',
-    version='0.0.2',
+    version='0.0.3',
     author='Stefan Jeske',
     author_email='jeske@cs.rwth-aachen.de',
     description='Minimalist mesh viewer for python powered by opengl',
