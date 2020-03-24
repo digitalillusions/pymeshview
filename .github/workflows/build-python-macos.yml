@@ -6,7 +6,7 @@ name: Python CI MacOS
 # events but only for the master branch
 on:
   push:
-    branches: [ mac-os-test ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -18,7 +18,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.7, 3.8]
         # python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
