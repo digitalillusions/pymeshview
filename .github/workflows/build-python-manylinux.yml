@@ -36,12 +36,20 @@ jobs:
     - name: Build manylinux Python wheels
       uses: digitalillusions/python-wheels-manylinux-build@master
       with:
-        python-versions: 'cp36-cp36m cp37-cp37m'
+        python-versions: 'cp27-cp27m cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38m'
         build-requirements: ''
         system-packages: 'cmake3 libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel'
         package-path: ''
         pip-wheel-args: '--manylinux-build'
-    
+
+    # Upload artifacts
+    - name: Upload compiled wheel
+      uses: actions/upload-artifact@master
+      with:
+        name: pymeshview-linux
+        path: wheelhouse
+      if: always()
+
     - name: Publish wheels to PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
