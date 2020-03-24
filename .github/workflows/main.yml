@@ -25,7 +25,7 @@ jobs:
       run: ls -al && pwd
       
     - name: Build manylinux Python wheels
-      uses: digitalillusions/python-wheels-manylinux-build@master-manylinux2010_x86_64
+      uses: digitalillusions/python-wheels-manylinux-build@master
       with:
         python-versions: 'cp36-cp36m cp37-cp37m'
         build-requirements: ''
