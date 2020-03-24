@@ -1,4 +1,4 @@
-name: Python package build and publish
+name: Python CI Manylinux
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
 # events but only for the master branch
@@ -31,7 +31,7 @@ jobs:
         build-requirements: 'cython numpy'
         system-packages: 'lrzip-devel zlib-devel'
         package-path: ''
-        pip-wheel-args: '--no-deps'
+        pip-wheel-args: '--no-deps --manylinux-build'
     # - name: Publish wheels to PyPI
     #   env:
     #     TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
