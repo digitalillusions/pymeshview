@@ -1,0 +1,40 @@
+name: Python package build and publish
+
+# Controls when the action will run. Triggers the workflow on push or pull request 
+# events but only for the master branch
+on:
+  push:
+    branches: [ ci-test ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Checkout submodules
+      shell: bash
+      run: |
+        # If your submodules are configured to use SSH instead of HTTPS please uncomment the following line
+        # git config --global url."https://github.com/".insteadOf "git@github.com:"
+        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+        git submodule sync --recursive
+        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+        
+    - name: List Contents of directory and current path
+      run: ls -al && pwd
+      
+    - name: Build manylinux Python wheels
+      uses: digitalillusions/python-wheels-manylinux-build@v0.2.2-manylinux2010_x86_64
+      with:
+        python-versions: 'cp36-cp36m cp37-cp37m'
+        build-requirements: 'cython numpy'
+        system-packages: 'lrzip-devel zlib-devel'
+        package-path: ''
+        pip-wheel-args: '--no-deps'
+    # - name: Publish wheels to PyPI
+    #   env:
+    #     TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+    #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    #   run: |
+    #     twine upload wheelhouse/*-manylinux*.whl
