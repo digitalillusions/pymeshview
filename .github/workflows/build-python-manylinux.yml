@@ -40,7 +40,7 @@ jobs:
         build-requirements: ''
         system-packages: 'cmake3 libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel'
         package-path: ''
-        pip-wheel-args: '--manylinux-build'
+        pip-wheel-args: ''
 
     # Upload artifacts
     - name: Upload compiled wheel
