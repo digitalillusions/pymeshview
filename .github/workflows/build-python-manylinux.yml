@@ -36,7 +36,7 @@ jobs:
     - name: Build manylinux Python wheels
       uses: digitalillusions/python-wheels-manylinux-build@master
       with:
-        python-versions: 'cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38'
+        python-versions: 'cp36-cp36m cp37-cp37m cp38-cp38'
         build-requirements: ''
         system-packages: 'cmake3 libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel'
         package-path: ''
